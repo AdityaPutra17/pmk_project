@@ -31,10 +31,10 @@
     <!-- Logo Header -->
     <div class="h-16 flex items-center justify-center border-b border-gray-200 bg-white">
         <div class="flex items-center gap-2">
-            <div class="h-8 w-8 bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-lg flex items-center justify-center">
-                <i data-lucide="zap" class="h-4 w-4 text-white"></i>
+            <div class="h-8 w-8 rounded-lg flex items-center justify-center">
+               <img src="{{asset('images/logopmk.png')}}" alt="">
             </div>
-            <span class="text-lg font-bold text-gray-800">Sales Automation</span>
+            <span class="text-lg font-bold text-gray-800">Panca Media Kreasi</span>
         </div>
     </div>
 
@@ -59,7 +59,7 @@
             
             <!-- Submenu -->
             <div id="submenu-master-data" class="submenu ml-8 mt-1 space-y-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                <a href="/area" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="map-pin" class="h-4 w-4"></i>
                     <span>Area</span>
                 </a>
@@ -187,8 +187,8 @@
                 <span class="text-sm font-medium text-indigo-600">AD</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-800 truncate">Admin User</p>
-                <p class="text-xs text-gray-500 truncate">admin@sales.com</p>
+                <p class="text-sm font-medium text-gray-800 truncate">{{ Auth::user()->name }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
             </div>
         </div>
     </div>

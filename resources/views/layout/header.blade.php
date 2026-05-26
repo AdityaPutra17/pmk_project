@@ -9,7 +9,7 @@
     </div>
     <div class="flex items-center gap-3">
         <!-- Search -->
-        <div class="relative hidden md:block">
+        {{-- <div class="relative hidden md:block">
             <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"></i>
             <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64">
         </div>
@@ -17,15 +17,15 @@
         <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
             <i data-lucide="bell" class="h-5 w-5"></i>
             <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        </button>
+        </button> --}}
         <!-- Profile -->
         <div class="flex items-center gap-2 pl-2 border-l border-gray-200">
             <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
                 <span class="text-sm font-medium text-indigo-600">AD</span>
             </div>
             <div class="hidden sm:block">
-                <p class="text-sm font-medium text-gray-800">Admin User</p>
-                <p class="text-xs text-gray-500">admin@sales.com</p>
+                <p class="text-sm font-medium text-gray-800">{{ Auth::user()->name }}</p>
+                <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
             </div>
         </div>
     </div>
