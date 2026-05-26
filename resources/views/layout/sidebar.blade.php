@@ -63,7 +63,7 @@
                     <i data-lucide="map-pin" class="h-4 w-4"></i>
                     <span>Area</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                <a href="/sales" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="users" class="h-4 w-4"></i>
                     <span>Sales</span>
                 </a>

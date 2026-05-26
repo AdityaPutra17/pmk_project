@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\SalesController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 
@@ -19,5 +20,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('logout');
 
     Route::resource('area', AreaController::class);
+    Route::resource('sales', SalesController::class);
 
 });

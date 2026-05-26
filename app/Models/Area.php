@@ -13,5 +13,10 @@ class Area extends Model
         'name',
         'kd_area',
     ];
+
+    public function sales()
+    {
+        return $this->hasMany(Sales::class);
+    }
     
 }
