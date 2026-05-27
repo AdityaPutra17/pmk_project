@@ -107,6 +107,7 @@
     </div>
 
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+        
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
@@ -123,8 +124,8 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $area->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $area->kd_area }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <!-- Action buttons (Edit/Delete) can go here -->
-                        <button 
+                            <!-- Action buttons (Edit/Delete) can go here -->
+                            <button 
                             onclick="openEditModal({{ $area->id }}, '{{ $area->name }}', '{{ $area->kd_area }}')"
                             class="text-indigo-600 hover:text-indigo-900">
                             Edit
@@ -136,7 +137,7 @@
                                 Delete
                             </button>
                         </form>
-                    </td>
+                    </td>                        
                 </tr>
                 @endforeach
             </tbody>
