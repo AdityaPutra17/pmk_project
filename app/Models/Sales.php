@@ -19,4 +19,9 @@ class Sales extends Model
     {
         return $this->belongsTo(Area::class);
     }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
 }

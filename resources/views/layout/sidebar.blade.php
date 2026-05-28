@@ -42,7 +42,7 @@
     <div class="flex-1 overflow-y-auto sidebar-scroll py-4">
         
         <!-- DASHBOARD -->
-        <a href="#" class="flex items-center gap-3 px-4 mx-2 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors">
+        <a href="/" class="flex items-center gap-3 px-4 mx-2 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors">
             <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
             <span class="font-medium">Dashboard</span>
         </a>
@@ -67,15 +67,15 @@
                     <i data-lucide="users" class="h-4 w-4"></i>
                     <span>Sales</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                <a href="/customers" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="user-check" class="h-4 w-4"></i>
                     <span>Customer</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                <a href="/item-categories" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="folder" class="h-4 w-4"></i>
                     <span>Jenis Item</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                <a href="/items" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="package" class="h-4 w-4"></i>
                     <span>Item</span>
                 </a>
