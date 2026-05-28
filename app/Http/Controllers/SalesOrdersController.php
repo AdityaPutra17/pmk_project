@@ -34,96 +34,6 @@ class SalesOrdersController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    // public function store(Request $request)
-    // {
-    //     //
-    //     $request->validate([
-    //         'customer_id'       => 'required|exists:customers,id',
-    //         'sales_id'          => 'required|exists:sales,id',
-    //         'tanggal_so'        => 'required|date',
-    //         'delivery_request'  => 'nullable|date',
-    //         'nomor_po'          => 'nullable|string|max:255',
-
-    //         'items'             => 'required|array|min:1',
-
-    //         'items.*.item_id'   => 'required|exists:items,id',
-    //         'items.*.qty'       => 'required|numeric|min:1',
-    //         'items.*.harga'     => 'required|numeric|min:0',
-    //     ]);
-
-    //     // dd($request->all());
-
-    //     DB::beginTransaction();
-
-    //     try {
-
-    //         // Generate nomor SO
-    //         $lastSO = Sales_orders::latest()->first();
-
-    //         $nextNumber = $lastSO
-    //             ? $lastSO->id + 1
-    //             : 1;
-
-    //         $nomorSO =
-    //             'SO' .
-    //             now()->format('Ym') .
-    //             str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-
-    //         // Create sales order header
-    //         $salesOrder = Sales_orders::create([
-    //             'nomor_so'         => $nomorSO,
-    //             'tanggal_so'       => $request->tanggal_so,
-    //             'customer_id'      => $request->customer_id,
-    //             'sales_id'         => $request->sales_id,
-    //             'nomor_po'         => $request->nomor_po,
-    //             'delivery_request' => $request->delivery_request,
-    //             'status'           => 'draft',
-    //             'grand_total'      => 0,
-    //         ]);
-
-    //         $grandTotal = 0;
-
-    //         // Create sales order details
-    //         foreach ($request->items as $item) {
-
-    //             $subtotal =
-    //                 $item['qty'] * $item['harga'];
-
-    //             $salesOrder->details()->create([
-    //                 'item_id'   => $item['item_id'],
-    //                 'qty'       => $item['qty'],
-    //                 'harga'     => $item['harga'],
-    //                 'subtotal'  => $subtotal,
-    //             ]);
-
-    //             $grandTotal += $subtotal;
-    //         }
-
-    //         // Update grand total
-    //         $salesOrder->update([
-    //             'grand_total' => $grandTotal
-    //         ]);
-
-    //         DB::commit();
-
-    //         return redirect()
-    //             ->route('transaksi.so.index')
-    //             ->with('success', 'Sales Order created successfully.');
-
-    //     } catch (\Exception $e) {
-
-    //         DB::rollBack();
-
-    //         return redirect()
-    //             ->back()
-    //             ->withInput()
-    //             ->with('error', $e->getMessage());
-    //     } 
-    // }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -156,7 +66,7 @@ class SalesOrdersController extends Controller
             $year = date('y');
 
             $nomorSO =
-                'IS' .
+                'SO' .
                 $year .
                 '' .
                 str_pad($nextNumber, 4, '0', STR_PAD_LEFT);

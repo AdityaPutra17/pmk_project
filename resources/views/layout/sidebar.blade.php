@@ -101,7 +101,7 @@
                     <i data-lucide="truck" class="h-4 w-4"></i>
                     <span>Delivery Order</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                <a href="/invoices" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="file-text" class="h-4 w-4"></i>
                     <span>Invoice</span>
                 </a>
