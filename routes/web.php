@@ -7,6 +7,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemCategoriesController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\SalesOrdersController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 
@@ -27,5 +28,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::resource('item-categories', ItemCategoriesController::class);
     Route::resource('items', ItemController::class);
+    Route::resource('sales-orders', SalesOrdersController::class);
 
 });
