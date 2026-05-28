@@ -149,5 +149,11 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         //
+        try {
+            $item->delete();
+            return redirect()->route('items.index')->with('success', 'Item deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('items.index')->with('error', 'Failed to delete Item: ' . $e->getMessage());
+        }
     }
 }
