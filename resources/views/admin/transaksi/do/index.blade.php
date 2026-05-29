@@ -214,6 +214,80 @@
 
     </div>
 
+    <div class="bg-white rounded-xl border border-gray-200 shadwo-sm p-5">
+        <table class="min-w-full text-sm text-left">
+
+            <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="px-4 py-3">No DO</th>
+                    <th class="px-4 py-3">Sales Order</th>
+                    <th class="px-4 py-3">Customer</th>
+                    <th class="px-4 py-3">Tanggal</th>
+                    <th class="px-4 py-3 text-right">Total Item</th>
+                    <th class="px-4 py-3 text-center">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @forelse($deliveryOrders as $do)
+
+                    <tr class="border-t hover:bg-gray-50">
+
+                        <td class="px-4 py-3 font-medium">
+                            {{ $do->nomor_do }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ $do->sales_order->nomor_so ?? '-' }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ $do->customer->nama_customer ?? '-' }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ $do->created_at->format('d-m-Y') }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right">
+                            {{ $do->details->count() }}
+                        </td>
+
+                        <td class="px-4 py-3 text-center space-x-2">
+
+                             <a
+                                href="{{ route('invoice.generate', $do->id) }}"
+                                class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                                Generate Invoice
+                            </a>
+
+                            <a
+                                href="{{ route('delivery-orders.print', $do->id) }}"
+                                target="_self"
+                                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                Print DO
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+                        <td colspan="6" class="text-center py-6 text-gray-500">
+                            Tidak ada data Delivery Order
+                        </td>
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+    </div>
+
 </div>
 
 <script>

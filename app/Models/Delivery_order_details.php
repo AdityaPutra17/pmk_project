@@ -18,7 +18,7 @@ class Delivery_order_details extends Model
         );
     }
 
-    public function sales_order_detail()
+    public function salesOrderDetail()
     {
         return $this->belongsTo(
             Sales_order_details::class,

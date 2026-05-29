@@ -9,6 +9,7 @@ use App\Http\Controllers\ItemCategoriesController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SalesOrdersController;
 use App\Http\Controllers\DeliveryOrdersController;
+use App\Http\Controllers\InvoiceController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 
@@ -31,5 +32,23 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('items', ItemController::class);
     Route::resource('sales-orders', SalesOrdersController::class);
     Route::resource('delivery-orders', DeliveryOrdersController::class);
+
+    Route::resource('invoice', InvoiceController::class);
+
+    Route::get(
+        '/invoice/generate/{id}',
+        [InvoiceController::class, 'generate']
+    )->name('invoice.generate');
+
+    Route::get(
+        '/invoice/print/{id}',
+        [InvoiceController::class, 'print']
+    )->name('invoice.print');
+
+    Route::get(
+        '/delivery-orders/print/{id}',
+        [DeliveryOrdersController::class, 'print']
+    )->name('delivery-orders.print');
+
 
 });
