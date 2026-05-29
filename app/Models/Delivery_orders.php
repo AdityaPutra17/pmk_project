@@ -35,4 +35,9 @@ class Delivery_orders extends Model
         return $this->belongsTo(Item::class, 'item_id');
     }
 
+    public function details()
+    {
+        return $this->hasMany(Delivery_order_details::class, 'delivery_order_id');
+    }
+
 }

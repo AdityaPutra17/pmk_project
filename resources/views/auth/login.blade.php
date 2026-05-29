@@ -33,7 +33,7 @@
                 </div>
                 
                 <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">
-                    Sales Automation
+                    PANCA MEDIA KREASI
                 </h2>
                 <p class="mt-2 text-sm text-gray-500">
                     Welcome back! Please sign in to your account.

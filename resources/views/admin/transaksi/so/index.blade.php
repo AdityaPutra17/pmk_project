@@ -4,36 +4,6 @@
 @section('content')
 
 <div class="container mx-auto p-4">
-    
-    @if(session('error'))
-        <div 
-            id="error-alert"
-            class="fixed bottom-5 right-5 z-50 flex items-center gap-3 bg-red-500 text-white px-5 py-3 rounded-xl shadow-lg transition-all duration-300"
-        >
-            <!-- Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                class="h-5 w-5" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-
-            <span>{{ session('error') }}</span>
-        </div>
-
-        <script>
-            setTimeout(() => {
-                const alert = document.getElementById('error-alert');
-
-                if (alert) {
-                    alert.classList.add('opacity-0', 'translate-y-2');
-                    setTimeout(() => alert.remove(), 300);
-                }
-            }, 3000);
-        </script>
-    @endif
 
     @if(session('success'))
         <div 
@@ -78,7 +48,7 @@
 
          <button onclick="toggleForms()" type="button" class="w-full px-5 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
             <div class="flex items-center gap-3">
-                <h2 class="text-lg font-medium text-gray-800">Add New Area</h2>
+                <h2 class="text-lg font-medium text-gray-800">Add New Sales Order</h2>
             </div>
             <svg id="toggle-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />

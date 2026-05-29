@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Delivery_orders;
+use App\Models\Delivery_order_details;
 use App\Models\Sales_orders;
 use App\Models\Sales_order_details;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class DeliveryOrdersController extends Controller
         $deliveryOrders = Delivery_orders::with([
             'sales_order',
             'customer',
-            'item'
+            'details.item',
         ])->get();
 
         $salesOrders = Sales_orders::with([
@@ -44,110 +45,131 @@ class DeliveryOrdersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
 
-            'sales_order_id'         => 'required|exists:sales_orders,id',
+public function store(Request $request)
+{
+    $request->validate([
 
-            'sales_order_detail_id'  => 'required|exists:sales_order_details,id',
+        'sales_order_id' => 'required|exists:sales_orders,id',
 
-            'customer_id'            => 'required|exists:customers,id',
+        'customer_id' => 'required|exists:customers,id',
 
-            'item_id'                => 'required|exists:items,id',
+        'details' => 'required|array',
 
-            'qty'                    => 'required|numeric|min:1',
+        'details.*.sales_order_detail_id'
+            => 'required|exists:sales_order_details,id',
 
-            'catatan'                => 'nullable|string',
+        'details.*.item_id'
+            => 'required|exists:items,id',
+
+        'details.*.qty'
+            => 'nullable|numeric|min:0',
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+
+        // generate nomor DO
+        $lastDO = Delivery_orders::latest()->first();
+
+        $nextNumber = $lastDO
+            ? $lastDO->id + 1
+            : 1;
+
+        $nomorDO =
+            'DO' .
+            now()->format('y') .
+            str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+        // create header DO
+        $do = Delivery_orders::create([
+
+            'nomor_do' => $nomorDO,
+
+            'tanggal_do' => now(),
+
+            'sales_order_id' => $request->sales_order_id,
+
+            'customer_id' => $request->customer_id,
+
+            'nomor_po' => Sales_orders::find(
+                $request->sales_order_id
+            )->nomor_po,
+
+            'catatan' => $request->catatan,
+
+            'status' => 'done',
         ]);
 
-        DB::beginTransaction();
+        // loop detail
+        foreach ($request->details as $detail) {
 
-        try {
+            if (
+                empty($detail['qty']) ||
+                $detail['qty'] <= 0
+            ) {
+                continue;
+            }
 
-            // generate nomor DO
-            $lastDO = Delivery_orders::latest()->first();
-
-            $nextNumber = $lastDO
-                ? $lastDO->id + 1
-                : 1;
-
-            $nomorDO =
-                'DO' .
-                now()->format('y') .
-                str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-
-            // ambil detail SO
             $detailSO = Sales_order_details::findOrFail(
-                $request->sales_order_detail_id
+                $detail['sales_order_detail_id']
             );
 
-            // validasi qty
             $sisaQty =
                 $detailSO->qty -
                 $detailSO->qty_delivered;
 
-            if ($request->qty > $sisaQty) {
+            if ($detail['qty'] > $sisaQty) {
 
-                return back()->with(
-                    'error',
-                    'Qty delivery melebihi sisa qty SO.'
+                throw new \Exception(
+                    'Qty delivery melebihi sisa qty.'
                 );
             }
 
-            // create DO
-            Delivery_orders::create([
+            Delivery_order_details::create([
 
-                'nomor_do'               => $nomorDO,
+                'delivery_order_id' =>
+                    $do->id,
 
-                'tanggal_do'             => now(),
+                'sales_order_detail_id' =>
+                    $detail['sales_order_detail_id'],
 
-                'sales_order_id'         => $request->sales_order_id,
+                'item_id' =>
+                    $detail['item_id'],
 
-                'sales_order_detail_id'  => $request->sales_order_detail_id,
-
-                'customer_id'            => $request->customer_id,
-
-                'item_id'                => $request->item_id,
-
-                'nomor_po'               => $detailSO
-                                                ->sales_order
-                                                ->nomor_po,
-
-                'qty'                    => $request->qty,
-
-                'catatan'                => $request->catatan,
-
-                'status'                 => 'done',
+                'qty' =>
+                    $detail['qty'],
             ]);
 
-            // update qty delivered
             $detailSO->increment(
                 'qty_delivered',
-                $request->qty
+                $detail['qty']
+            );
+        }
+
+        DB::commit();
+
+        return redirect()
+            ->route('delivery-orders.index')
+            ->with(
+                'success',
+                'Delivery Order berhasil dibuat.'
             );
 
-            DB::commit();
+    } catch (\Exception $e) {
 
-            return redirect()
-                ->route('delivery-orders.index')
-                ->with(
-                    'success',
-                    'Delivery Order berhasil dibuat.'
-                );
+        DB::rollBack();
 
-        } catch (\Exception $e) {
-
-            DB::rollBack();
-
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    $e->getMessage()
-                );
-        }
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                $e->getMessage()
+            );
     }
+}
+
 
     /**
      * Display the specified resource.
