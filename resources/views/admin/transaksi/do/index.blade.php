@@ -256,11 +256,18 @@
 
                         <td class="px-4 py-3 text-center space-x-2">
 
-                             <a
+                             {{-- <a
                                 href="{{ route('invoice.generate', $do->id) }}"
                                 class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
                                 Generate Invoice
-                            </a>
+                            </a> --}}
+
+                            {{-- <a
+                                href="{{ route('delivery-orders.print', $do->id) }}"
+                                target="_self"
+                                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                Print DO
+                            </a> --}}
 
                             <a
                                 href="{{ route('delivery-orders.print', $do->id) }}"

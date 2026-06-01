@@ -40,15 +40,25 @@ Route::middleware(['auth'])->group(function () {
         [InvoiceController::class, 'generate']
     )->name('invoice.generate');
 
+    
+    Route::get(
+        '/delivery-orders/print/{id}',
+        [DeliveryOrdersController::class, 'print']
+        )->name('delivery-orders.print');
+        
     Route::get(
         '/invoice/print/{id}',
         [InvoiceController::class, 'print']
     )->name('invoice.print');
 
     Route::get(
-        '/delivery-orders/print/{id}',
-        [DeliveryOrdersController::class, 'print']
-    )->name('delivery-orders.print');
+    '/invoice/create',
+    [InvoiceController::class,'create']
+    )->name('invoice.create');
 
+    Route::post(
+        '/invoice/store',
+        [InvoiceController::class,'store']
+    );
 
 });

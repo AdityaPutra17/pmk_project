@@ -25,4 +25,20 @@ class Invoice extends Model
             'customer_id'
         );
     }
+
+    public function details()
+    {
+        return $this->hasMany(
+            invoice_details::class,
+            'invoice_id'
+        );
+    }
+
+    public function sales_order_detail()
+    {
+        return $this->belongsTo(
+            Sales_order_details::class,
+            'sales_order_detail_id'
+        );
+    }
 }

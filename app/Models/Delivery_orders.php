@@ -40,9 +40,16 @@ class Delivery_orders extends Model
         return $this->hasMany(Delivery_order_details::class, 'delivery_order_id');
     }
 
-    public function invoice()
+    // public function invoice()
+    // {
+    //     return $this->hasOne(Invoice_headers::class, 'delivery_order_id');
+    // }
+    public function invoices()
     {
-        return $this->hasOne(Invoice_headers::class, 'delivery_order_id');
+        return $this->hasMany(
+            Invoice::class,
+            'delivery_order_id'
+        );
     }
 
 }

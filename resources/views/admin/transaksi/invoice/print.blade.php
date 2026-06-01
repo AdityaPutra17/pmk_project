@@ -295,49 +295,37 @@
             </thead>
 
             <tbody>
+                @foreach($invoice->details as $detail)
 
-                @foreach($invoice->deliveryOrder->details as $detail)
+                <tr>
 
-                    <tr>
+                    <td align="center">
+                        {{ $loop->iteration }}
+                    </td>
 
-                        <td align="center">
-                            {{ $loop->iteration }}
-                        </td>
+                    <td align="center">
+                        {{ $detail->salesOrderDetail->item->deskripsi }}
+                    </td>
 
-                        <td>
+                    <td align="center">
 
-                            {{ $detail->item->deskripsi }}
+                        {{ $invoice->deliveryOrder->nomor_do }}
 
-                        </td>
+                    </td>
 
-                        <td align="center">
+                    <td align="center">
+                        Rp {{ number_format($detail->harga) }}
+                    </td>
 
-                            {{ $invoice->deliveryOrder->nomor_do }}
+                    <td align="center">
+                        {{ $detail->qty }}
+                    </td>
 
-                        </td>
+                    <td align="center">
+                        Rp {{ number_format($detail->subtotal) }}
+                    </td>
 
-                        <td class="text-right">
-
-                            Rp
-                            {{ number_format($detail->salesOrderDetail->harga ?? 0, 0, ',', '.') }}
-
-                        </td>
-
-                        <td align="center">
-
-                            {{ number_format($detail->qty, 0, ',', '.') }}
-
-                        </td>
-
-                        <td class="text-right">
-
-                            Rp
-
-                            {{ number_format($detail->salesOrderDetail->subtotal ?? 0, 0, ',', '.') }}
-                            
-                        </td>
-
-                    </tr>
+                </tr>
 
                 @endforeach
 
@@ -410,25 +398,8 @@
             </tr>
 
             <tr>
-
                 <td>
-                    Uang Muka
-                </td>
-
-                <td>
-                    -
-                </td>
-
-                <td>
-
-                </td>
-
-            </tr>
-
-            <tr class="bold">
-
-                <td>
-                    Tagihan
+                    Total Pembayaran
                 </td>
 
                 <td>
@@ -437,7 +408,24 @@
 
                 <td class="text-right">
 
-                    {{ number_format($invoice->grand_total, 0, ',', '.') }}
+                    {{ number_format($totalDibayar, 0, ',', '.') }}
+
+                </td>
+            </tr>
+
+            <tr class="bold">
+
+                <td>
+                    Sisa Tagihan
+                </td>
+
+                <td>
+                    Rp
+                </td>
+
+                <td class="text-right">
+
+                    {{ number_format($sisaTagihan, 0, ',', '.') }}
 
                 </td>
 

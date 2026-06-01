@@ -131,11 +131,17 @@
                             Satuan
                         </label>
 
-                        <input type="text"
+                        {{-- <input type="text"
                             name="satuan"
                             required
                             class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                            placeholder="e.g pcs, box, kg">
+                            placeholder="e.g pcs, box, kg"> --}}
+                        <select name="satuan" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="pcs">pcs</option>
+                            <option value="box">box</option>
+                            <option value="kg">kg</option>
+                        </select>
+
                     </div>
 
                     <!-- Deskripsi -->

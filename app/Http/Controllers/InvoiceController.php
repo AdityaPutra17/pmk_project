@@ -5,8 +5,10 @@ use App\Models\Delivery_orders;
 use App\Models\Sales_orders;
 use App\Models\Sales_order_details;
 use App\Models\Invoice;
+use App\Models\Invoice_details;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -22,64 +24,180 @@ class InvoiceController extends Controller
             compact('invoices')
         );
     }
-    //
-    public function generate($id)
+
+    public function create()
     {
-        $do = Delivery_orders::with([
-            'details.item',
+        $deliveryOrders = Delivery_orders::with([
             'customer',
-            'sales_order'
-        ])->findOrFail($id);
+            'details.item',
+            'details.salesOrderDetail',
+            'invoices'
+        ])
+        ->whereDoesntHave('invoices', function ($q) {
 
-        $lastInvoice = Invoice::latest()->first();
+            $q->where('status', 'lunas');
 
-        $nextNumber =
-            $lastInvoice
-            ? $lastInvoice->id + 1
+        })
+        ->get();
+
+        return view(
+            'admin.transaksi.invoice.create',
+            compact('deliveryOrders')
+        );
+    }
+
+    public function store(Request $request)
+    {
+        DB::transaction(function () use ($request) {
+
+            $status = 'unpaid';
+
+            if ($request->jenis_invoice == 'pelunasan') {
+                $status = 'lunas';
+            } elseif ($request->jenis_invoice == 'cicilan') {
+                $status = 'partial';
+            }
+
+            $invoice = Invoice::create([
+
+                'nomor_invoice'
+                    => $this->generateNomorInvoice(),
+
+                'kode_transaksi'
+                    => $this->generateKodeTransaksi(),
+
+                'delivery_order_id'
+                    => $request->delivery_order_id,
+
+                'customer_id'
+                    => $request->customer_id,
+
+                'tanggal_invoice'
+                    => $request->tanggal,
+
+                'jenis_invoice'
+                    => $request->jenis_invoice,
+
+                'persentase_dp'
+                    => $request->persentase_dp ?? 0,
+
+                'nominal_dp'
+                    => $request->nominal_dp ?? 0,
+
+                'catatan'
+                    => $request->catatan,
+
+                'total_dpp'
+                    => $request->total_dpp,
+
+                'ppn_total'
+                    => $request->ppn_total,
+
+                'grand_total'
+                    => $request->grand_total,
+
+                'status'
+                    => $status
+            ]);
+
+            foreach ($request->items as $item)
+            {
+                Invoice_details::create([
+
+                    'invoice_id'
+                        => $invoice->id,
+
+                    'delivery_order_detail_id'
+                        => $item['do_detail_id'],
+
+                    'sales_order_detail_id'
+                        => $item['so_detail_id'],
+
+                    'qty'
+                        => $item['qty'],
+
+                    'harga'
+                        => $item['harga'],
+
+                    'subtotal'
+                        => $item['subtotal']
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('invoice.index')
+            ->with(
+                'success',
+                'Invoice berhasil dibuat'
+            );
+    }
+
+    private function generateNomorInvoice()
+    {
+        $tahun = now()->format('y');
+
+        $last = Invoice::orderByDesc('id')
+            ->first();
+
+        $urut = $last
+            ? ((int) substr(
+                $last->nomor_invoice,
+                -4
+            )) + 1
             : 1;
 
-        $nomorInvoice =
-            'INV' .
-            now()->format('ym') .
-            str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        return 'IF'
+            .$tahun
+            .str_pad(
+                $urut,
+                4,
+                '0',
+                STR_PAD_LEFT
+            );
+    }
 
-        Invoice::create([
-
-            'nomor_invoice'   => $nomorInvoice,
-
-            'tanggal_invoice' => now(),
-
-            'delivery_order_id' => $do->id,
-
-            'customer_id' => $do->customer_id,
-
-            'total_dpp' => $do->sales_order->total_dpp,
-
-            'ppn_total' => $do->sales_order->ppn_total,
-
-            'grand_total' => $do->sales_order->grand_total,
-
-            'status' => 'unpaid',
-        ]);
-
-        return back()->with(
-            'success',
-            'Invoice berhasil dibuat'
-        );
+    private function generateKodeTransaksi()
+    {
+        return 'IF'
+            .now()->format('y')
+            .str_pad(
+                Invoice::count() + 1,
+                6,
+                '0',
+                STR_PAD_LEFT
+            );
     }
 
     public function print($id)
     {
         $invoice = Invoice::with([
-            'deliveryOrder.details.item',
-            'deliveryOrder.details.salesOrderDetail',
-            'deliveryOrder.sales_order.sales',
-            'customer'
+            'details.salesOrderDetail.item',
+            'customer',
+            'deliveryOrder.sales_order.sales'
         ])->findOrFail($id);
+
+        $totalDibayar = Invoice::where(
+            'delivery_order_id',
+            $invoice->delivery_order_id
+        )
+        ->where('id', '<=', $invoice->id)
+        ->sum('nominal_dp');
+
+        $sisaTagihan =
+            $invoice->grand_total - $totalDibayar;
+
+        if ($sisaTagihan < 0) {
+            $sisaTagihan = 0;
+        }
 
         return view(
             'admin.transaksi.invoice.print',
-            compact('invoice')
+            compact(
+                'invoice',
+                'totalDibayar',
+                'sisaTagihan'
+            )
         );
     }
 }

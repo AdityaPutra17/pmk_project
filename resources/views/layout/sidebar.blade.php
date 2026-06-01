@@ -171,10 +171,14 @@
                     <i data-lucide="user-circle" class="h-4 w-4"></i>
                     <span>Profile</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
-                    <i data-lucide="log-out" class="h-4 w-4"></i>
-                    <span>Logout</span>
-                </a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                        <i data-lucide="log-out" class="h-4 w-4"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
             </div>
         </div>
 
