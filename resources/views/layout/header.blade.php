@@ -8,25 +8,84 @@
         </div>
     </div>
     <div class="flex items-center gap-3">
-        <!-- Search -->
-        {{-- <div class="relative hidden md:block">
-            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"></i>
-            <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64">
-        </div>
-        <!-- Notifications -->
-        <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
-            <i data-lucide="bell" class="h-5 w-5"></i>
-            <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        </button> --}}
+        
         <!-- Profile -->
-        <div class="flex items-center gap-2 pl-2 border-l border-gray-200">
-            <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span class="text-sm font-medium text-indigo-600">AD</span>
-            </div>
-            <div class="hidden sm:block">
-                <p class="text-sm font-medium text-gray-800">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
+        <div class="relative">
+            <button
+                id="profileBtn"
+                type="button"
+                class="flex items-center gap-2 pl-2 border-l border-gray-200 hover:bg-gray-50 rounded-lg px-2 py-1 transition">
+
+                <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <span class="text-sm font-medium text-indigo-600">
+                        {{ strtoupper(substr(Auth::user()->name,0,1)) }}
+                    </span>
+                </div>
+
+                <div class="hidden sm:block text-left">
+                    <p class="text-sm font-medium text-gray-800">
+                        {{ Auth::user()->name }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        {{ Auth::user()->email }}
+                    </p>
+                </div>
+
+                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500"></i>
+            </button>
+
+            <!-- Dropdown -->
+            <div
+                id="profileDropdown"
+                class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50">
+
+                <div class="px-4 py-3 border-b border-gray-100">
+                    <p class="text-sm font-medium text-gray-800">
+                        {{ Auth::user()->name }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        {{ Auth::user()->email }}
+                    </p>
+                </div>
+
+                <a
+                    href=""
+                    class="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">
+
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    Profile
+                </a>
+
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50">
+
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Logout
+                    </button>
+                </form>
+
             </div>
         </div>
     </div>
 </header>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const btn = document.getElementById('profileBtn');
+    const dropdown = document.getElementById('profileDropdown');
+
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', function () {
+        dropdown.classList.add('hidden');
+    });
+
+});
+</script>
