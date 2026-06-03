@@ -1,584 +1,384 @@
-
 @extends('template')
+
 @section('title', 'Sales Order')
+
 @section('content')
 
-<div class="container mx-auto p-4">
-
-    @if(session('success'))
-        <div 
-            id="success-alert"
-            class="fixed bottom-5 right-5 z-50 flex items-center gap-3 bg-green-500 text-white px-5 py-3 rounded-xl shadow-lg transition-all duration-300"
-        >
-            <!-- Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                class="h-5 w-5" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round" 
-                    stroke-linejoin="round" 
-                    d="M5 13l4 4L19 7" />
-            </svg>
-
-            <span>{{ session('success') }}</span>
-        </div>
-
-        <script>
-            setTimeout(() => {
-                const alert = document.getElementById('success-alert');
-
-                if (alert) {
-                    alert.classList.add('opacity-0', 'translate-y-2');
-
-                    setTimeout(() => {
-                        alert.remove();
-                    }, 300);
-                }
-            }, 3000);
-        </script>
-    @endif
-
-    <h1 class="text-2xl font-bold mb-4">
-        Sales Order
-    </h1>
-
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-6 overflow-hidden">
-
-         <button onclick="toggleForms()" type="button" class="w-full px-5 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
-            <div class="flex items-center gap-3">
-                <h2 class="text-lg font-medium text-gray-800">Add New Sales Order</h2>
-            </div>
-            <svg id="toggle-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-        </button>
-
-        <div id="form-content" class="hidden px-5 pb-5 border-t border-gray-200">
-            <form action="{{ route('sales-orders.store') }}" method="POST">
-    
-                @csrf
-    
-                <!-- Header SO -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    
-                    <!-- Customer -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Customer
-                        </label>
-    
-                        <select
-                            name="customer_id"
-                            id="customer_id"
-                            required
-                            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg">
-    
-                            <option value="">-- Select Customer --</option>
-    
-                            @foreach($customers as $customer)
-                                <option
-                                    value="{{ $customer->id }}"
-                                    data-sales="{{ $customer->sales->name }}"
-                                    data-area="{{ $customer->area->name }}"
-                                    data-sales-id="{{ $customer->sales->id }}"
-                                >
-                                    {{ $customer->nama_customer }}
-                                </option>
-                            @endforeach
-    
-                        </select>
-                    </div>
-    
-                    <!-- Sales -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Sales
-                        </label>
-    
-                        <input
-                            type="text"
-                            id="sales_name"
-                            readonly
-                            class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg">
-                        
-                        <input type="hidden" name="sales_id" id="sales_id">
-                    </div>
-    
-                    <!-- Area -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Area
-                        </label>
-    
-                        <input
-                            type="text"
-                            id="area_name"
-                            readonly
-                            class="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-lg">
-                    </div>
-    
-                    <!-- Nomor PO -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Nomor PO
-                        </label>
-    
-                        <input
-                            type="text"
-                            name="nomor_po"
-                            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg">
-                    </div>
-    
-                    <!-- Tanggal SO -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Tanggal SO
-                        </label>
-    
-                        <input
-                            type="date"
-                            name="tanggal_so"
-                            value="{{ date('Y-m-d') }}"
-                            required
-                            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg">
-                    </div>
-    
-                    <!-- Delivery Request -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Delivery Request
-                        </label>
-    
-                        <input
-                            type="date"
-                            name="delivery_request"
-                            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg">
-                    </div>
-    
-                </div>
-    
-                <!-- Item Table -->
-                <div class="overflow-x-auto">
-    
-                    <table class="min-w-full divide-y divide-gray-200">
-    
-                        <thead class="bg-gray-50">
-    
-                            <tr>
-    
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Item
-                                </th>
-    
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Qty
-                                </th>
-    
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Harga
-                                </th>
-    
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Subtotal
-                                </th>
-    
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Action
-                                </th>
-    
-                            </tr>
-    
-                        </thead>
-    
-                        <tbody id="item-table">
-    
-                            <tr>
-    
-                                <!-- Item -->
-                                <td class="p-2">
-    
-                                    <select
-                                        name="items[0][item_id]"
-                                        class="item-select w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg"
-                                        required>
-    
-                                        <option value="">-- Select Item --</option>
-    
-                                        @foreach($items as $item)
-    
-                                            <option
-                                                value="{{ $item->id }}"
-                                                data-harga="{{ $item->harga }}">
-                                                
-                                                {{ $item->deskripsi }}
-    
-                                            </option>
-    
-                                        @endforeach
-    
-                                    </select>
-    
-                                </td>
-    
-                                <!-- Qty -->
-                                <td class="p-2">
-    
-                                    <input
-                                        type="number"
-                                        name="items[0][qty]"
-                                        class="qty w-full px-3 py-2 border rounded-lg"
-                                        value="1"
-                                        min="1"
-                                        required>
-    
-                                </td>
-    
-                                <!-- Harga -->
-                                <td class="p-2">
-    
-                                    <input
-                                        type="number"
-                                        name="items[0][harga]"
-                                        class="harga w-full px-3 py-2 border rounded-lg"
-                                        required>
-    
-                                </td>
-    
-                                <!-- Subtotal -->
-                                <td class="p-2">
-    
-                                    <input
-                                        type="text"
-                                        class="subtotal w-full px-3 py-2 bg-gray-100 border rounded-lg"
-                                        readonly>
-    
-                                </td>
-    
-                                <!-- Action -->
-                                <td class="p-2">
-    
-                                    <button
-                                        type="button"
-                                        onclick="removeRow(this)"
-                                        class="px-3 py-2 bg-red-500 text-white rounded-lg">
-    
-                                        Delete
-    
-                                    </button>
-    
-                                </td>
-    
-                            </tr>
-    
-                        </tbody>
-    
-                    </table>
-    
-                </div>
-    
-                <!-- Add Item -->
-                <div class="mt-4">
-    
-                    <button
-                        type="button"
-                        onclick="addRow()"
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg">
-    
-                        + Add Item
-    
-                    </button>
-    
-                </div>
-    
-                <!-- Grand Total -->
-                <div class="mt-6 flex justify-end">
-    
-                    <div class="w-full md:w-1/3">
-    
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Grand Total
-                        </label>
-    
-                        <input
-                            type="text"
-                            id="grand_total"
-                            readonly
-                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-xl font-bold">
-    
-                    </div>
-    
-                </div>
-    
-                <!-- Submit -->
-                <div class="mt-6 flex justify-end">
-    
-                    <button
-                        type="submit"
-                        class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
-    
-                        Save Sales Order
-    
-                    </button>
-    
-                </div>
-    
-            </form>
-        </div>
-
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         
-    </div>
-    
-    <div class="bg-white rounded-xl border border-gray-200 shadwo-sm p-5">
-        <table class="min-w-full divide-y divide-gray-200">
+        <!-- Success Alert -->
+        @if(session('success'))
+            <div id="success-alert" class="fixed bottom-5 right-5 z-50 flex items-center gap-3 bg-green-500 text-white px-5 py-3 rounded-xl shadow-lg transition-all duration-300 transform translate-y-0 opacity-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const alert = document.getElementById('success-alert');
+                    if(alert) {
+                        alert.classList.add('opacity-0', 'translate-y-2');
+                        setTimeout(() => alert.remove(), 300);
+                    }
+                }, 3000);
+            </script>
+        @endif
 
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No SO</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sales</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ppn</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total After Ppn</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grand Total</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                </tr>
-            </thead>
+        <!-- Page Header -->
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
+                    Sales Order
+                </h1>
+                <p class="mt-1 text-sm text-gray-500">
+                    Kelola pesanan penjualan dan detail item.
+                </p>
+            </div>
+        </div>
 
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($salesOrders as $so)
-                    <tr>
-                        <td class="px-4 py-4">
-                            <button
-                                onclick="toggleDetail({{ $so->id }})"
-                                class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm">
-                                
-                                <span id="icon-{{ $so->id }}">+</span>
-                            </button>
-                        </td>
-                        <td class="px-4 py-3 font-medium">{{ $loop->iteration }}</td>
-                        <td class="px-4 py-3 font-medium">{{ $so->nomor_so }}</td>
-                        <td class="px-4 py-3">{{ $so->tanggal_so }}</td>
-                        <td class="px-4 py-3">{{ $so->customer->nama_customer ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $so->sales->name ?? '-' }}</td>
-                        <td class="px-4 py-3">
-                            Rp {{ number_format($so->total_dpp, 0, ',', '.') }}
-                        </td>
-                        <td class="px-4 py-3">
-                            Rp {{ number_format($so->ppn_total, 0, ',', '.') }}
-                        </td>
-                        <td class="px-4 py-3">
-                            Rp {{ number_format($so->grand_total, 0, ',', '.') }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 text-xs rounded bg-gray-100">
-                                {{ $so->status }}
-                            </span>
-                        </td>
+        <!-- Form Section (Accordion) -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8 transition-all duration-300">
+            <button onclick="toggleForms()" type="button" class="w-full px-6 py-5 flex items-center justify-between bg-gradient-to-r from-white to-gray-50 hover:bg-gray-50 transition-all cursor-pointer group">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <h2 class="text-lg font-bold text-gray-800">Buat Sales Order Baru</h2>
+                        <p class="text-xs text-gray-500 font-normal">Isi detail pesanan dan item barang</p>
+                    </div>
+                </div>
+                <svg id="toggle-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 transform transition-transform duration-300 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
 
-                        <td class="px-4 py-3">
-                            <button
-                                type="button"
-                                onclick="toggleDetail({{ $so->id }})"
-                                class="text-indigo-600 hover:underline">
-                                Detail
-                            </button>
-                        </td>
-                    </tr>
+            <div id="form-content" class="hidden border-t border-gray-100 bg-gray-50/30">
+                <form action="{{ route('sales-orders.store') }}" method="POST" class="p-6 space-y-6">
+                    @csrf
 
-                    {{-- DETAIL --}}
-                    <tr id="detail-{{ $so->id }}" class="hidden bg-gray-50">
-                        <td colspan="7" class="px-4 py-4">
+                    <!-- Header Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <!-- Customer -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Customer <span class="text-red-500">*</span>
+                            </label>
+                            <select name="customer_id" id="customer_id" required class="block w-full rounded-lg border-gray-300 pl-4 pr-10 py-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm shadow-sm border transition-colors">
+                                <option value="">-- Pilih Customer --</option>
+                                @foreach($customers as $customer)
+                                    <option value="{{ $customer->id }}" data-sales="{{ $customer->sales->name ?? '-' }}" data-area="{{ $customer->area->name ?? '-' }}" data-sales-id="{{ $customer->sales->id ?? '' }}">
+                                        {{ $customer->nama_customer }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            <div class="text-sm font-semibold mb-2">
+                        <!-- Sales (Auto Fill) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Sales
+                            </label>
+                            <input type="text" id="sales_name" readonly placeholder="Pilih customer" class="block w-full rounded-lg border-gray-200 bg-gray-100 text-gray-600 sm:text-sm border py-3 px-4 cursor-not-allowed">
+                            <input type="hidden" name="sales_id" id="sales_id">
+                        </div>
+
+                        <!-- Area (Auto Fill) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Area
+                            </label>
+                            <input type="text" id="area_name" readonly placeholder="Pilih customer" class="block w-full rounded-lg border-gray-200 bg-gray-100 text-gray-600 sm:text-sm border py-3 px-4 cursor-not-allowed">
+                        </div>
+
+                        <!-- Nomor PO -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Nomor PO
+                            </label>
+                            <input type="text" name="nomor_po" placeholder="Contoh: PO/2024/001" class="block w-full rounded-lg border-gray-300 pl-4 py-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm shadow-sm border">
+                        </div>
+
+                        <!-- Tanggal SO -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Tanggal SO <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="tanggal_so" value="{{ date('Y-m-d') }}" required class="block w-full rounded-lg border-gray-300 pl-4 py-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm shadow-sm border">
+                        </div>
+
+                        <!-- Delivery Request -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Delivery Request
+                            </label>
+                            <input type="date" name="delivery_request" class="block w-full rounded-lg border-gray-300 pl-4 py-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm shadow-sm border">
+                        </div>
+
+                        <!-- Jenis Pajak -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Jenis Pajak <span class="text-red-500">*</span>
+                            </label>
+                            <select name="jenis_pajak" required class="block w-full rounded-lg border-gray-300 pl-4 pr-10 py-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm shadow-sm border">
+                                <option value="ppn">PPN 11%</option>
+                                <option value="non_ppn">Non PPN</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="block text-sm font-bold text-gray-800">
                                 Detail Item
-                            </div>
+                            </label>
+                            <button type="button" onclick="addRow()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Tambah Item
+                            </button>
+                        </div>
 
-                            <table class="w-full text-sm border">
-
-                                <thead class="bg-gray-100">
+                        <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="p-2 text-left">Item</th>
-                                        <th class="p-2 text-left">Qty</th>
-                                        <th class="p-2 text-left">Harga</th>
-                                        <th class="p-2 text-left">Subtotal</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/5">Item</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Qty</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Harga</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Subtotal</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-10">Aksi</th>
                                     </tr>
                                 </thead>
-
-                                <tbody>
-                                    @foreach($so->details as $detail)
-                                        <tr class="border-t">
-                                            <td class="p-2">
-                                                {{ $detail->item->deskripsi ?? '-' }}
-                                            </td>
-                                            <td class="p-2">{{ $detail->qty }}</td>
-                                            <td class="p-2">
-                                                Rp {{ number_format($detail->harga, 0, ',', '.') }}
-                                            </td>
-                                            <td class="p-2">
-                                                Rp {{ number_format($detail->subtotal, 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                <tbody id="item-table" class="bg-white divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 transition-colors group">
+                                        <td class="p-3">
+                                            <select name="items[0][item_id]" class="item-select block w-full rounded-lg border-gray-300 py-2 px-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border" required>
+                                                <option value="">-- Pilih Item --</option>
+                                                @foreach($items as $item)
+                                                    <option value="{{ $item->id }}" data-harga="{{ $item->harga }}">
+                                                        {{ $item->deskripsi }} ({{ $item->kd_item }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="p-3">
+                                            <input type="number" name="items[0][qty]" class="qty block w-full rounded-lg border-gray-300 py-2 px-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border" value="1" min="1" required>
+                                        </td>
+                                        <td class="p-3">
+                                            <input type="number" name="items[0][harga]" class="harga block w-full rounded-lg border-gray-300 py-2 px-3 bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border" required>
+                                        </td>
+                                        <td class="p-3">
+                                            <input type="text" class="subtotal block w-full rounded-lg bg-gray-100 border-gray-200 py-2 px-3 sm:text-sm border text-gray-600 cursor-not-allowed" readonly>
+                                        </td>
+                                        <td class="p-3 text-center">
+                                            <button type="button" onclick="removeRow(this)" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100" title="Hapus">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
-
                             </table>
+                        </div>
+                    </div>
 
-                        </td>
-                    </tr>
+                    <!-- Grand Total -->
+                    <div class="flex justify-end">
+                        <div class="w-full md:w-1/3 bg-gray-50 rounded-xl p-4 border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-600">Grand Total</span>
+                                <span class="text-2xl font-bold text-indigo-600" id="grand_total">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
 
-                @endforeach
+                    <!-- Submit Button -->
+                    <div class="flex justify-end pt-4 border-t border-gray-100 gap-3">
+                        <button type="button" onclick="toggleForms()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg shadow-sm text-sm font-medium bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all transform active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Simpan Sales Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-            </tbody>
+        <!-- Data Table Section -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-lg font-bold text-gray-800">Riwayat Sales Order</h3>
+                <span class="text-xs font-medium text-gray-500 bg-white px-3 py-1 rounded-full border">
+                    {{ $salesOrders->count() }} Records
+                </span>
+            </div>
 
-        </table>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left">
+                    <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+                        <tr>
+                            <th class="px-4 py-4 font-semibold w-10"></th>
+                            <th class="px-4 py-4 font-semibold">No SO</th>
+                            <th class="px-4 py-4 font-semibold">Tanggal</th>
+                            <th class="px-4 py-4 font-semibold">Customer</th>
+                            <th class="px-4 py-4 font-semibold">Sales</th>
+                            <th class="px-4 py-4 font-semibold text-right">Total</th>
+                            <th class="px-4 py-4 font-semibold text-center">Status</th>
+                            <th class="px-4 py-4 font-semibold text-center">Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse($salesOrders as $so)
+                            <tr class="hover:bg-gray-50 transition-colors group">
+                                <td class="px-4 py-4">
+                                    <button onclick="toggleDetail({{ $so->id }})" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-indigo-100 hover:text-indigo-600 flex items-center justify-center text-sm font-medium transition-colors">
+                                        <span id="icon-{{ $so->id }}" class="transition-transform">+</span>
+                                    </button>
+                                </td>
+                                <td class="px-4 py-4 font-medium text-indigo-600">
+                                    {{ $so->nomor_so }}
+                                </td>
+                                <td class="px-4 py-4 text-gray-600">
+                                    {{ \Carbon\Carbon::parse($so->tanggal_so)->format('d-m-Y') }}
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
+                                            {{ substr($so->customer->nama_customer ?? 'C', 0, 1) }}
+                                        </div>
+                                        <span class="text-gray-700 font-medium">
+                                            {{ $so->customer->nama_customer ?? '-' }}
+                                        </span>
+                                    </div>
+                                </td>
+                                                                <td class="px-4 py-4 text-gray-600">
+                                    {{ $so->sales->name ?? '-' }}
+                                </td>
+                                <td class="px-4 py-4 text-right">
+                                    <span class="text-gray-900 font-semibold">
+                                        Rp {{ number_format($so->grand_total, 0, ',', '.') }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-4 text-center">
+                                    @if($so->status == 'approved')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Approved
+                                        </span>
+                                    @elseif($so->status == 'pending')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            Pending
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            {{ $so->status }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-4 text-center">
+                                    <div class="inline-flex items-center gap-1">
+                                        {{-- <a href="{{ route('sales-orders.show', $so->id) }}" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Lihat">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a> --}}
+                                        {{-- <a href="{{ route('sales-orders.print', $so->id) }}" target="_blank" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Print">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                            </svg>
+                                        </a> --}}
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Detail Row (Expandable) -->
+                            <tr id="detail-{{ $so->id }}" class="hidden bg-gray-50">
+                                <td colspan="8" class="px-4 py-4">
+                                    <div class="bg-white rounded-xl border border-gray-200 p-4">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <h4 class="text-sm font-bold text-gray-800">Detail Item SO</h4>
+                                            <span class="text-xs text-gray-500">{{ $so->details->count() }} item</span>
+                                        </div>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full text-sm">
+                                                <thead class="bg-gray-100">
+                                                    <tr>
+                                                        <th class="p-3 text-left font-medium text-gray-600">Item</th>
+                                                        <th class="p-3 text-right font-medium text-gray-600">Qty</th>
+                                                        <th class="p-3 text-right font-medium text-gray-600">Harga</th>
+                                                        <th class="p-3 text-right font-medium text-gray-600">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-gray-100">
+                                                    @foreach($so->details as $detail)
+                                                        <tr>
+                                                            <td class="p-3">
+                                                                <div class="font-medium text-gray-800">{{ $detail->item->deskripsi ?? '-' }}</div>
+                                                                <div class="text-xs text-gray-500">{{ $detail->item->kd_item ?? '-' }}</div>
+                                                            </td>
+                                                            <td class="p-3 text-right">{{ $detail->qty }}</td>
+                                                            <td class="p-3 text-right">Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                                            <td class="p-3 text-right font-medium">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                                <tfoot class="bg-gray-50">
+                                                    <tr>
+                                                        <td colspan="3" class="p-3 text-right font-medium text-gray-600">Subtotal</td>
+                                                        <td class="p-3 text-right font-medium">Rp {{ number_format($so->total_dpp, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" class="p-3 text-right font-medium text-gray-600">PPN 11%</td>
+                                                        <td class="p-3 text-right font-medium">Rp {{ number_format($so->ppn_total, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" class="p-3 text-right font-bold text-gray-800">Grand Total</td>
+                                                        <td class="p-3 text-right font-bold text-indigo-600">Rp {{ number_format($so->grand_total, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center justify-center text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <p class="text-lg font-medium text-gray-600">Belum ada Sales Order</p>
+                                        <p class="text-sm text-gray-500 mt-1">Silakan buat pesanan baru untuk memulai.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
-
-
 </div>
 
+<!-- JavaScript Logic -->
 <script>
-
-    // Customer change
-    document.getElementById('customer_id').addEventListener('change', function () {
-
-        let selected = this.options[this.selectedIndex];
-
-        document.getElementById('sales_name').value =
-            selected.dataset.sales || '';
-
-        document.getElementById('area_name').value =
-            selected.dataset.area || '';
-
-        document.getElementById('sales_id').value =
-            selected.dataset.salesId || '';
-
-    });
-
-    // Auto harga
-    document.addEventListener('change', function (e) {
-
-        if (e.target.classList.contains('item-select')) {
-
-            let row = e.target.closest('tr');
-
-            let harga =
-                e.target.options[e.target.selectedIndex]
-                .dataset.harga;
-
-            row.querySelector('.harga').value = harga;
-
-            calculateRow(row);
-        }
-
-    });
-
-    // Qty & harga calculate
-    document.addEventListener('input', function (e) {
-
-        if (
-            e.target.classList.contains('qty') ||
-            e.target.classList.contains('harga')
-        ) {
-
-            let row = e.target.closest('tr');
-
-            calculateRow(row);
-        }
-
-    });
-
-    function calculateRow(row) {
-
-        let qty =
-            parseFloat(row.querySelector('.qty').value) || 0;
-
-        let harga =
-            parseFloat(row.querySelector('.harga').value) || 0;
-
-        let subtotal = qty * harga;
-
-        row.querySelector('.subtotal').value =
-            subtotal.toLocaleString();
-
-        calculateGrandTotal();
-    }
-
-    function calculateGrandTotal() {
-
-        let total = 0;
-
-        document.querySelectorAll('.subtotal').forEach(el => {
-
-            total += parseFloat(
-                el.value.replace(/,/g, '')
-            ) || 0;
-
-        });
-
-        document.getElementById('grand_total').value =
-            total.toLocaleString();
-    }
-
-    let rowIndex = 1;
-
-    function addRow() {
-
-        let table =
-            document.getElementById('item-table');
-
-        let firstRow =
-            table.querySelector('tr');
-
-        let newRow =
-            firstRow.cloneNode(true);
-
-        // reset values
-        newRow.querySelectorAll('input').forEach(input => {
-
-            input.value = '';
-
-        });
-
-        newRow.querySelector('.qty').value = 1;
-
-        // rename input
-        newRow.querySelectorAll('select, input').forEach(el => {
-
-            if (el.name) {
-
-                el.name =
-                    el.name.replace(/\d+/, rowIndex);
-
-            }
-
-        });
-
-        table.appendChild(newRow);
-
-        rowIndex++;
-    }
-
-    function removeRow(button) {
-
-        let rows =
-            document.querySelectorAll('#item-table tr');
-
-        if (rows.length > 1) {
-
-            button.closest('tr').remove();
-
-            calculateGrandTotal();
-        }
-    }
-
-</script>
-
-<script>
+    // Toggle Form
     function toggleForms() {
         const formContent = document.getElementById('form-content');
         const toggleIcon = document.getElementById('toggle-icon');
@@ -591,16 +391,11 @@
             toggleIcon.classList.remove('rotate-180');
         }
     }
-</script>
 
-<script>
+    // Toggle Detail
     function toggleDetail(id) {
-
-        const detail =
-            document.getElementById(`detail-${id}`);
-
-        const icon =
-            document.getElementById(`icon-${id}`);
+        const detail = document.getElementById(`detail-${id}`);
+        const icon = document.getElementById(`icon-${id}`);
 
         detail.classList.toggle('hidden');
 
@@ -610,6 +405,88 @@
             icon.innerText = '-';
         }
     }
+
+    // Customer Change
+    document.getElementById('customer_id').addEventListener('change', function () {
+        const selected = this.options[this.selectedIndex];
+
+        document.getElementById('sales_name').value = selected.dataset.sales || '';
+        document.getElementById('area_name').value = selected.dataset.area || '';
+        document.getElementById('sales_id').value = selected.dataset.salesId || '';
+    });
+
+    // Auto Fill Harga & Calculate
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('item-select')) {
+            const row = e.target.closest('tr');
+            const harga = e.target.options[e.target.selectedIndex].dataset.harga;
+            row.querySelector('.harga').value = harga || 0;
+            calculateRow(row);
+        }
+    });
+
+    // Qty & Harga Calculate
+    document.addEventListener('input', function (e) {
+        if (e.target.classList.contains('qty') || e.target.classList.contains('harga')) {
+            const row = e.target.closest('tr');
+            calculateRow(row);
+        }
+    });
+
+    // Calculate Row
+    function calculateRow(row) {
+        const qty = parseFloat(row.querySelector('.qty').value) || 0;
+        const harga = parseFloat(row.querySelector('.harga').value) || 0;
+        const subtotal = qty * harga;
+        row.querySelector('.subtotal').value = subtotal.toLocaleString('id-ID');
+        calculateGrandTotal();
+    }
+
+    // Calculate Grand Total
+    function calculateGrandTotal() {
+        let total = 0;
+        document.querySelectorAll('.subtotal').forEach(el => {
+            total += parseFloat(el.value.replace(/,/g, '')) || 0;
+        });
+        document.getElementById('grand_total').innerText = 'Rp ' + total.toLocaleString('id-ID');
+    }
+
+    // Add Row
+    let rowIndex = 1;
+    function addRow() {
+        const table = document.getElementById('item-table');
+        const firstRow = table.querySelector('tr');
+        const newRow = firstRow.cloneNode(true);
+
+        // Reset values
+        newRow.querySelectorAll('input').forEach(input => input.value = '');
+        newRow.querySelector('.qty').value = 1;
+
+        // Rename inputs
+        newRow.querySelectorAll('select, input').forEach(el => {
+            if (el.name) {
+                el.name = el.name.replace(/\d+/, rowIndex);
+            }
+        });
+
+        table.appendChild(newRow);
+        rowIndex++;
+    }
+
+    // Remove Row
+    function removeRow(button) {
+        const rows = document.querySelectorAll('#item-table tr');
+        if (rows.length > 1) {
+            button.closest('tr').remove();
+            calculateGrandTotal();
+        }
+    }
 </script>
+
+<style>
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+</style>
 
 @endsection

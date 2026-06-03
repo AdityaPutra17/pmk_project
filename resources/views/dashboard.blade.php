@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <h2 class="text-xl font-bold text-slate-800 truncate">Rp {{ number_format($totalSalesOrder,0,',','.') }}</h2>
-                <p class="text-xs text-emerald-600 mt-1 font-medium">+12% from last month</p>
+                <p class="text-xs text-emerald-600 mt-1 font-medium"> All time</p>
             </div>
         </div>
 

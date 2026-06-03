@@ -50,6 +50,8 @@ class SalesOrdersController extends Controller
             'items.*.qty'       => 'required|numeric|min:1',
             'items.*.harga'     => 'required|numeric|min:0',
 
+            'jenis_pajak' => 'required|in:ppn,non_ppn',
+
         ]);
 
         DB::beginTransaction();
@@ -94,11 +96,17 @@ class SalesOrdersController extends Controller
                 $subtotal =
                     $item['qty'] * $item['harga'];
 
-                $ppn =
-                    $subtotal * 0.11;
+                if ($request->jenis_pajak == 'ppn') {
 
-                $totalAfterPPN =
-                    $subtotal + $ppn;
+                    $ppn = $subtotal * 0.11;
+                    $totalAfterPPN = $subtotal + $ppn;
+
+                } else {
+
+                    $ppn = 0;
+                    $totalAfterPPN = $subtotal;
+
+                }
 
                 $salesOrder->details()->create([
                     'item_id'          => $item['item_id'],
@@ -112,12 +120,19 @@ class SalesOrdersController extends Controller
                 $totalDpp += $subtotal;
             }
 
+            
             // PPN 11%
-            $ppnTotal =
-                $totalDpp * 0.11;
+            if ($request->jenis_pajak == 'ppn') {
 
-            $grandTotal =
-                $totalDpp + $ppnTotal;
+                $ppnTotal = $totalDpp * 0.11;
+                $grandTotal = $totalDpp + $ppnTotal;
+
+            } else {
+
+                $ppnTotal = 0;
+                $grandTotal = $totalDpp;
+
+            }
 
             $salesOrder->update([
 
