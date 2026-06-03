@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SalesOrdersController;
 use App\Http\Controllers\DeliveryOrdersController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 
@@ -18,9 +19,10 @@ Route::post('/login-process', [AuthController::class, 'loginProcess'])
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
 
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');

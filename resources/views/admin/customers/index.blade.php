@@ -2,6 +2,35 @@
 @section('title', 'Customer Management')
 @section('content')
 <div class="container mx-auto px-3 sm:px-4 py-4 overflow-x-hidden">
+    @if(session('error'))
+        <div 
+            id="error-alert"
+            class="fixed bottom-5 right-5 z-50 flex items-center gap-3 bg-red-500 text-white px-5 py-3 rounded-xl shadow-lg transition-all duration-300"
+        >
+            <!-- Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                class="h-5 w-5" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+
+            <span>{{ session('error') }}</span>
+        </div>
+
+        <script>
+            setTimeout(() => {
+                const alert = document.getElementById('error-alert');
+
+                if (alert) {
+                    alert.classList.add('opacity-0', 'translate-y-2');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 3000);
+        </script>
+    @endif
     @if(session('success'))
         <div 
             id="success-alert"
@@ -112,13 +141,19 @@
                             NPWP
                         </label>
 
+                        
                         <input type="text"
-                            name="npwp"
-                            id="npwp"
-                            value="{{ old('npwp') }}"
-                            required
-                            class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Enter NPWP">
+                        name="npwp"
+                        id="npwp"
+                        value="{{ old('npwp') }}"
+                        required
+                        maxlength="16"
+                        pattern="[0-9]{16}"
+                        class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        placeholder="Masukkan 16 digit NPWP">
+                        <small class="text-red-500">
+                            NPWP harus terdiri dari 16 digit angka.
+                        </small>
 
                         @error('npwp')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

@@ -41,7 +41,7 @@ class CustomerController extends Controller
         try{
 
             $request->validate([
-                'nama_customer' => 'required|string|max:255',
+                'nama_customer' => 'required|string|max:255|unique:customers',
                 // 'kd_customer' => 'required|string|max:255|unique:customers',
                 'alamat' => 'required|string',
                 'npwp' => 'required|string|max:255',
