@@ -41,4 +41,14 @@ class Invoice extends Model
             'sales_order_detail_id'
         );
     }
+
+    public function deliveryOrders()
+    {
+        return $this->belongsToMany(
+            Delivery_orders::class,
+            'invoice_delivery_orders',
+            'invoice_id',
+            'delivery_order_id'
+        );
+    }
 }

@@ -20,26 +20,11 @@
     {{-- KPI ROW 1 (Main Metrics) --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
-        {{-- TOTAL SALES --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-100 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
-            <div class="relative z-10">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Sales</span>
-                    <div class="p-2 rounded-lg bg-emerald-50 text-emerald-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                    </div>
-                </div>
-                <h2 class="text-xl font-bold text-slate-800 truncate">Rp {{ number_format($totalSalesOrder,0,',','.') }}</h2>
-                <p class="text-xs text-emerald-600 mt-1 font-medium"> All time</p>
-            </div>
-        </div>
-
         {{-- SALES ORDER --}}
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
             <div class="relative z-10">
-                <div class="flex justify-between items-center mb-3">
+                <div class="flex justify-between items-center mb-1">
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sales Order</span>
                     <div class="p-2 rounded-lg bg-blue-50 text-blue-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -47,6 +32,7 @@
                 </div>
                 <h2 class="text-xl font-bold text-slate-800">{{ $totalSO }}</h2>
                 <p class="text-xs text-slate-400 mt-1 font-medium">Active orders</p>
+                <h2 class="text-xl font-bold text-emerald-600 truncate">Rp {{ number_format($totalSalesOrder,0,',','.') }}</h2>
             </div>
         </div>
 
@@ -80,6 +66,24 @@
             </div>
         </div>
 
+        
+        {{-- TOTAL PIUTANG --}}
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Invoice Belum Lunas</span>
+            <div class="flex items-center mb-2">
+                <h2 class="text-xl font-bold text-red-600 mx-2">{{ $invoiceBelumLunas }}</h2> 
+                <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">Overdue</span>
+            </div>
+
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Piutang</span>
+            </div>
+            <h2 class="text-xl font-bold text-orange-600">Rp {{ number_format($totalPiutang,0,',','.') }}</h2>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+                <div class="bg-orange-500 h-1.5 rounded-full" style="width: 60%"></div>
+            </div>
+        </div>
+
     </div>
 
     {{-- KPI ROW 2 (Secondary Metrics) --}}
@@ -107,28 +111,7 @@
             </div>
         </div>
 
-        {{-- INVOICE BELUM LUNAS --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Invoice Belum Lunas</span>
-                <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">Overdue</span>
-            </div>
-            <h2 class="text-xl font-bold text-red-600">{{ $invoiceBelumLunas }}</h2>
-            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                <div class="bg-red-500 h-1.5 rounded-full" style="width: 40%"></div>
-            </div>
-        </div>
-
-        {{-- TOTAL PIUTANG --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Piutang</span>
-            </div>
-            <h2 class="text-xl font-bold text-orange-600">Rp {{ number_format($totalPiutang,0,',','.') }}</h2>
-            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                <div class="bg-orange-500 h-1.5 rounded-full" style="width: 60%"></div>
-            </div>
-        </div>
+        
 
     </div>
 

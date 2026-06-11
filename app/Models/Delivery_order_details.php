@@ -10,13 +10,20 @@ class Delivery_order_details extends Model
 
     protected $guarded = [];
 
-    public function delivery_order()
-    {
-        return $this->belongsTo(
-            Delivery_orders::class,
-            'delivery_order_id'
-        );
-    }
+    // public function delivery_order()
+    // {
+    //     return $this->belongsTo(
+    //         Delivery_orders::class,
+    //         'delivery_order_id'
+    //     );
+    // }
+    public function deliveryOrder()
+{
+    return $this->belongsTo(
+        Delivery_orders::class,
+        'delivery_order_id'
+    );
+}
 
     public function salesOrderDetail()
     {

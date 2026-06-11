@@ -57,6 +57,7 @@ class InvoiceController extends Controller
             } elseif ($request->jenis_invoice == 'cicilan') {
                 $status = 'partial';
             }
+            
 
             $invoice = Invoice::create([
 
@@ -65,9 +66,6 @@ class InvoiceController extends Controller
 
                 'kode_transaksi'
                     => $this->generateKodeTransaksi(),
-
-                'delivery_order_id'
-                    => $request->delivery_order_id,
 
                 'customer_id'
                     => $request->customer_id,
@@ -99,6 +97,10 @@ class InvoiceController extends Controller
                 'status'
                     => $status
             ]);
+            
+            $invoice->deliveryOrders()
+                ->sync($request->delivery_order_ids);
+            
 
             foreach ($request->items as $item)
             {
@@ -174,12 +176,12 @@ class InvoiceController extends Controller
         $invoice = Invoice::with([
             'details.salesOrderDetail.item',
             'customer',
-            'deliveryOrder.sales_order.sales'
+            'deliveryOrders.sales_order.sales'
         ])->findOrFail($id);
 
         $totalDibayar = Invoice::where(
-            'delivery_order_id',
-            $invoice->delivery_order_id
+            'customer_id',
+            $invoice->customer_id
         )
         ->where('id', '<=', $invoice->id)
         ->sum('nominal_dp');
@@ -199,5 +201,70 @@ class InvoiceController extends Controller
                 'sisaTagihan'
             )
         );
+    }
+    public function show($id)
+    {
+        $invoice = Invoice::with([
+            'customer',
+            'details.salesOrderDetail.item',
+            'details.deliveryOrderDetail.deliveryOrder',
+            'deliveryOrders.customer'
+        ])->findOrFail($id);
+
+        $totalDibayar =
+            $invoice->nominal_dp;
+
+        $sisaTagihan =
+            $invoice->grand_total -
+            $totalDibayar;
+
+        if($sisaTagihan < 0)
+        {
+            $sisaTagihan = 0;
+        }
+
+        return view(
+            'admin.transaksi.invoice.show',
+            compact(
+                'invoice',
+                'totalDibayar',
+                'sisaTagihan'
+            )
+        );
+    }
+
+    public function storePayment(Request $request, $id)
+    {
+        $request->validate([
+            'nominal_dp' => 'required|numeric|min:1'
+        ]);
+
+        $invoice = Invoice::findOrFail($id);
+
+        $totalDibayar =
+            $invoice->nominal_dp +
+            $request->nominal_dp;
+
+        $status = 'partial';
+
+        if($totalDibayar >= $invoice->grand_total)
+        {
+            $totalDibayar =
+                $invoice->grand_total;
+
+            $status = 'lunas';
+        }
+
+        $invoice->update([
+            'nominal_dp' => $totalDibayar,
+            'status' => $status
+        ]);
+
+        return redirect()
+            ->route('invoice.show', $invoice->id)
+            ->with(
+                'success',
+                'Pembayaran berhasil disimpan'
+            );
     }
 }

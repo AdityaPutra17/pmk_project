@@ -116,8 +116,13 @@
                     <tbody class="divide-y divide-gray-100">
                         @forelse($invoices as $invoice)
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 font-medium text-indigo-600">
-                                    {{ $invoice->nomor_invoice }}
+                                <td class="px-6 py-4">
+                                    <a
+                                        href="{{ route('invoice.show', $invoice->id) }}"
+                                        class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+                                    >
+                                        {{ $invoice->nomor_invoice }}
+                                    </a>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">

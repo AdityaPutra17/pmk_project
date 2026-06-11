@@ -124,7 +124,7 @@
 
             <!-- Footer -->
             <div class="text-center text-sm text-gray-500 mt-4">
-                &copy; 2024 Sales Automation. All rights reserved.
+                &copy; 2026 PMK. All rights reserved.
             </div>
         </div>
     </div>

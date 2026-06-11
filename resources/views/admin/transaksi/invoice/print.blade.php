@@ -6,7 +6,7 @@
         Invoice {{ $invoice->nomor_invoice }}
     </title>
 
-    <link rel="icon" type="image/png" href="{{ asset('images/logopmk.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logopmknew.png') }}">
 
     <style>
 
@@ -233,7 +233,12 @@
 
                             <td>
                                 :
-                                {{ $invoice->deliveryOrder->sales_order->nomor_so ?? '-' }}
+
+                                {{ $invoice->deliveryOrders
+                                        ->pluck('sales_order.nomor_so')
+                                        ->unique()
+                                        ->implode(', ')
+                                }}
                             </td>
 
                         </tr>
@@ -246,7 +251,11 @@
 
                             <td>
                                 :
-                                {{ $invoice->deliveryOrder->nomor_po ?? '-' }}
+                                {{ $invoice->deliveryOrders
+                                        ->pluck('nomor_po')
+                                        ->unique()
+                                        ->implode(', ')
+                                }}
                             </td>
 
                         </tr>
@@ -309,7 +318,7 @@
 
                     <td align="center">
 
-                        {{ $invoice->deliveryOrder->nomor_do }}
+                        {{ $detail->deliveryOrderDetail->deliveryOrder->nomor_do }}
 
                     </td>
 

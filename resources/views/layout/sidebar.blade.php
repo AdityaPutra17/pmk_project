@@ -32,7 +32,7 @@
     <div class="h-16 flex items-center justify-center border-b border-gray-200 bg-white">
         <div class="flex items-center gap-2">
             <div class="h-8 w-8 rounded-lg flex items-center justify-center">
-               <img src="{{asset('images/logopmk.png')}}" alt="">
+               <img src="{{asset('images/logopmknew.png')}}" alt="">
             </div>
             <span class="text-lg font-bold text-gray-800">Panca Media Kreasi</span>
         </div>
@@ -104,6 +104,10 @@
                 <a href="/invoice" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
                     <i data-lucide="file-text" class="h-4 w-4"></i>
                     <span>Invoice</span>
+                </a>
+                <a href="/historytransaction" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-indigo-600 text-sm transition-colors">
+                    <i data-lucide="file-text" class="h-4 w-4"></i>
+                    <span>History Transaction</span>
                 </a>
             </div>
         </div>

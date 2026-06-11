@@ -63,4 +63,13 @@ Route::middleware(['auth'])->group(function () {
         [InvoiceController::class,'store']
     );
 
+    Route::get(
+        '/invoice/{id}',
+        [InvoiceController::class, 'show']
+    )->name('invoice.show');
+    
+    Route::post(
+        '/invoice/{id}/payment',
+        [InvoiceController::class, 'storePayment']
+    )->name('invoice.payment.store');
 });

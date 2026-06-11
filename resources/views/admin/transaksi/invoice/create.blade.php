@@ -31,7 +31,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <!-- Left Column - Form Fields -->
-                <div class="lg:col-span-2 space-y-6">
+                <div class="lg:col-span-12  space-y-6">
                     
                     <!-- Basic Info Card -->
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -60,9 +60,10 @@
                                     </label>
                                     <select
                                         name="jenis_invoice"
-                                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-3"
+                                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-3" required>
                                     >
-                                        <option value="standar">Standar</option>
+                                        {{-- <option value="standar">Standar</option> --}}
+                                        <option value="" selected disabled>Pilih Jenis</option>
                                         <option value="dp">Uang Muka (DP)</option>
                                         <option value="cicilan">Cicilan</option>
                                         <option value="pelunasan">Pelunasan</option>
@@ -71,39 +72,97 @@
                             </div>
 
                             <!-- DO & Customer -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            {{-- <div class="grid grid-cols-2 sm:grid-cols-2 gap-6"> --}}
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Delivery Order <span class="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        id="delivery_order"
-                                        name="delivery_order_id"
-                                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-3"
-                                        required
-                                    >
-                                        <option value="">-- Pilih DO --</option>
-                                        @foreach($deliveryOrders as $do)
-                                            <option value="{{ $do->id }}" data-do='@json($do)'>
-                                                {{ $do->nomor_do }} - {{ $do->customer->nama_customer }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <label class="block text-sm font-bold text-gray-800">
+                                            Delivery Order
+                                        </label>
+
+                                        <button
+                                            type="button"
+                                            onclick="addDORow()"
+                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+
+                                            Tambah DO
+                                        </button>
+                                        
+                                    </div>
+
+                                    <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+                                        <table class="min-w-full divide-y divide-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th class="px-4 py-3 text-left">
+                                                        Delivery Order
+                                                    </th>
+                                                    <th class="px-4 py-3 text-left">
+                                                        Customer
+                                                    </th>
+                                                    <th class="px-4 py-3 text-center">
+                                                        Aksi
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody id="do-table">
+
+                                                <tr class="do-row">
+
+                                                    <td class="p-3">
+
+                                                        <select
+                                                            name="delivery_order_ids[]"
+                                                            class="do-select w-full border rounded-lg p-2"
+                                                            onchange="loadDO(this)"
+                                                            required>
+
+                                                            <option value="">
+                                                                -- Pilih DO --
+                                                            </option>
+
+                                                            @foreach($deliveryOrders as $do)
+
+                                                                <option
+                                                                    value="{{ $do->id }}"
+                                                                    data-do='@json($do)'>
+                                                                    {{ $do->nomor_do }}
+                                                                </option>
+
+                                                            @endforeach
+                                                            
+                                                            <input
+                                                                type="hidden"
+                                                                name="customer_id"
+                                                                id="customer_id">
+
+                                                        </select>
+
+                                                    </td>
+
+                                                    <td class="p-3 customer-name">
+                                                        -
+                                                    </td>
+
+                                                    <td class="p-3 text-center">
+
+                                                        <button
+                                                            type="button"
+                                                            onclick="removeDORow(this)"
+                                                            class="text-red-500">
+                                                            Hapus
+                                                        </button>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Customer
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="customer_name"
-                                        placeholder="Pilih DO terlebih dahulu"
-                                        class="block w-full rounded-lg bg-gray-100 border-gray-200 text-gray-600 sm:text-sm border p-3 cursor-not-allowed"
-                                        readonly
-                                    >
-                                    <input type="hidden" name="customer_id" id="customer_id">
-                                </div>
-                            </div>
+                            {{-- </div> --}}
 
                         </div>
                     </div>
@@ -120,6 +179,8 @@
                             <table class="min-w-full text-sm text-left">
                                 <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
                                     <tr>
+
+                                        <th class="px-6 py-3 font-semibold text-right">DO</th>
                                         <th class="px-6 py-3 font-semibold">Item</th>
                                         <th class="px-6 py-3 font-semibold text-right">Qty</th>
                                         <th class="px-6 py-3 font-semibold text-right">Harga</th>
@@ -150,12 +211,24 @@
                                 placeholder="Tulis catatan atau instruksi khusus..."
                             ></textarea>
                         </div>
+                        
+                        <button
+                            type="submit"
+                            class="w-full inline-flex items-center justify-center px-6 py-4 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Simpan Invoice
+                        </button>
                     </div>
+                    
+
 
                 </div>
 
                 <!-- Right Column - Summary -->
-                <div class="space-y-6">
+                <div class="space-y-6 hidden">
                     
                     <!-- Payment Summary Card -->
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-6">
@@ -216,17 +289,6 @@
                                     <span class="text-lg font-bold text-yellow-700" id="sisa_tagihan_view">Rp 0</span>
                                 </div>
                             </div>
-
-                            <!-- Submit Button -->
-                            <button
-                                type="submit"
-                                class="w-full inline-flex items-center justify-center px-6 py-4 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                                Simpan Invoice
-                            </button>
 
                         </div>
                     </div>
@@ -360,6 +422,211 @@
         document.getElementById('grand_total_view').innerText = 'Rp ' + grand.toLocaleString('id-ID');
         document.getElementById('sisa_tagihan_view').innerText = 'Rp ' + sisaSetelahBayar.toLocaleString('id-ID');
     }
+
 </script>
 
+<script>
+    let rowIndex = 1;
+
+function addDORow()
+{
+    let html = `
+        <tr class="do-row">
+
+            <td class="p-3">
+
+                <select
+                    name="delivery_order_ids[]"
+                    class="do-select w-full border rounded-lg p-2"
+                    onchange="loadDO(this)"
+                    required>
+
+                    <option value="">
+                        -- Pilih DO --
+                    </option>
+
+                    @foreach($deliveryOrders as $do)
+
+                        <option
+                            value="{{ $do->id }}"
+                            data-do='@json($do)'>
+                            {{ $do->nomor_do }}
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+            </td>
+
+            <td class="p-3 customer-name">
+                -
+            </td>
+
+            <td class="p-3 text-center">
+
+                <button
+                    type="button"
+                    onclick="removeDORow(this)"
+                    class="text-red-500">
+                    Hapus
+                </button>
+
+            </td>
+
+        </tr>
+    `;
+
+    document
+        .getElementById('do-table')
+        .insertAdjacentHTML(
+            'beforeend',
+            html
+        );
+}
+
+function removeDORow(btn)
+{
+    btn.closest('tr').remove();
+
+    rebuildItems();
+}
+
+function loadDO(select)
+{
+    let row =
+        select.closest('tr');
+
+    let option =
+        select.options[
+            select.selectedIndex
+        ];
+
+    if(!option.dataset.do)
+    {
+        row.querySelector(
+            '.customer-name'
+        ).innerHTML = '-';
+
+        rebuildItems();
+
+        return;
+    }
+
+    let data =
+        JSON.parse(option.dataset.do);
+
+    row.querySelector(
+        '.customer-name'
+    ).innerHTML =
+        data.customer.nama_customer;
+
+    document.getElementById(
+        'customer_id'
+    ).value =
+        data.customer.id;
+
+    rebuildItems();
+}
+
+function rebuildItems()
+{
+    let tbody =
+        document.getElementById(
+            'invoice_items'
+        );
+
+    tbody.innerHTML = '';
+
+    let total = 0;
+    let index = 0;
+
+    document
+    .querySelectorAll('.do-select')
+    .forEach(select => {
+
+        let option =
+            select.options[
+                select.selectedIndex
+            ];
+
+        if(!option.dataset.do)
+        {
+            return;
+        }
+
+        let data =
+            JSON.parse(option.dataset.do);
+
+        data.details.forEach(detail => {
+
+            let harga =
+                detail.sales_order_detail.harga;
+
+            let subtotal =
+                detail.qty * harga;
+
+            total += subtotal;
+
+            tbody.innerHTML += `
+                <tr>
+
+                    <td class="px-4 py-2">
+                        ${data.nomor_do}
+                    </td>
+
+                    <td class="px-4 py-2">
+                        ${detail.item.deskripsi}
+                    </td>
+
+                    <td class="px-4 py-2">
+                        ${detail.qty}
+                    </td>
+
+                    <td class="px-4 py-2">
+                        Rp ${Number(harga)
+                            .toLocaleString('id-ID')}
+                    </td>
+
+                    <td class="px-4 py-2">
+                        Rp ${Number(subtotal)
+                            .toLocaleString('id-ID')}
+                    </td>
+
+                    <input
+                        type="hidden"
+                        name="items[${index}][do_detail_id]"
+                        value="${detail.id}">
+
+                    <input
+                        type="hidden"
+                        name="items[${index}][so_detail_id]"
+                        value="${detail.sales_order_detail.id}">
+
+                    <input
+                        type="hidden"
+                        name="items[${index}][qty]"
+                        value="${detail.qty}">
+
+                    <input
+                        type="hidden"
+                        name="items[${index}][harga]"
+                        value="${harga}">
+
+                    <input
+                        type="hidden"
+                        name="items[${index}][subtotal]"
+                        value="${subtotal}">
+                </tr>
+            `;
+
+            index++;
+        });
+
+    });
+
+    currentTotal = total;
+    calculateTotal();
+}
+</script>
 @endsection

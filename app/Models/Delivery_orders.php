@@ -44,12 +44,14 @@ class Delivery_orders extends Model
     // {
     //     return $this->hasOne(Invoice_headers::class, 'delivery_order_id');
     // }
+
     public function invoices()
     {
-        return $this->hasMany(
+        return $this->belongsToMany(
             Invoice::class,
-            'delivery_order_id'
+            'invoice_delivery_orders',
+            'delivery_order_id',
+            'invoice_id'
         );
     }
-
 }
