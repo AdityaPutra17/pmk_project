@@ -54,21 +54,6 @@
                                         required
                                     >
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Jenis Invoice
-                                    </label>
-                                    <select
-                                        name="jenis_invoice"
-                                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-3" required>
-                                    >
-                                        {{-- <option value="standar">Standar</option> --}}
-                                        <option value="" selected disabled>Pilih Jenis</option>
-                                        <option value="dp">Uang Muka (DP)</option>
-                                        <option value="cicilan">Cicilan</option>
-                                        <option value="pelunasan">Pelunasan</option>
-                                    </select>
-                                </div>
                             </div>
 
                             <!-- DO & Customer -->
@@ -405,7 +390,7 @@
 
     function calculateTotal() {
         const dpp = currentTotal;
-        const ppn = dpp * 0.11;
+        const ppn = Math.ceil(dpp * 0.11);
         const grand = dpp + ppn;
 
         const pembayaranBaru = parseFloat(document.getElementById('nominal_dp').value) || 0;

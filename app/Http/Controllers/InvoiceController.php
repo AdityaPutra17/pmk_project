@@ -6,6 +6,7 @@ use App\Models\Sales_orders;
 use App\Models\Sales_order_details;
 use App\Models\Invoice;
 use App\Models\Invoice_details;
+use App\Models\HistoryTransaction;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,11 +53,11 @@ class InvoiceController extends Controller
 
             $status = 'unpaid';
 
-            if ($request->jenis_invoice == 'pelunasan') {
-                $status = 'lunas';
-            } elseif ($request->jenis_invoice == 'cicilan') {
-                $status = 'partial';
-            }
+            // if ($request->jenis_invoice == 'pelunasan') {
+            //     $status = 'lunas';
+            // } elseif ($request->jenis_invoice == 'cicilan') {
+            //     $status = 'partial';
+            // }
             
 
             $invoice = Invoice::create([
@@ -74,13 +75,11 @@ class InvoiceController extends Controller
                     => $request->tanggal,
 
                 'jenis_invoice'
-                    => $request->jenis_invoice,
+                    => 'dp',
 
-                'persentase_dp'
-                    => $request->persentase_dp ?? 0,
+                'persentase_dp' => 0,
 
-                'nominal_dp'
-                    => $request->nominal_dp ?? 0,
+                'nominal_dp' => 0,
 
                 'catatan'
                     => $request->catatan,
@@ -89,13 +88,43 @@ class InvoiceController extends Controller
                     => $request->total_dpp,
 
                 'ppn_total'
-                    => $request->ppn_total,
+                    => ceil($request->ppn_total),
 
                 'grand_total'
                     => $request->grand_total,
 
                 'status'
                     => $status
+            ]);
+
+            HistoryTransaction::create([
+
+                'invoice_id'
+                    => $invoice->id,
+
+                'nomor_invoice'
+                    => $invoice->nomor_invoice,
+
+                'tipe_transaksi'
+                    => 'create',
+
+                'nominal_sebelum'
+                    => 0,
+
+                'nominal_bayar'
+                    => $invoice->nominal_dp,
+
+                'nominal_setelah'
+                    => $invoice->nominal_dp,
+
+                'status_sebelum'
+                    => null,
+
+                'status_setelah'
+                    => $invoice->status,
+
+                'user_name'
+                    => auth()->user()->name ?? 'System'
             ]);
             
             $invoice->deliveryOrders()
@@ -202,6 +231,27 @@ class InvoiceController extends Controller
             )
         );
     }
+
+    public function updateJenisInvoice(Request $request, $id)
+{
+    $request->validate([
+        'jenis_invoice' => 'required|in:dp,cicilan,pelunasan'
+    ]);
+
+    $invoice = Invoice::findOrFail($id);
+
+    $invoice->update([
+        'jenis_invoice' => $request->jenis_invoice
+    ]);
+
+    return redirect()
+        ->back()
+        ->with(
+            'success',
+            'Jenis invoice berhasil diubah'
+        );
+}
+
     public function show($id)
     {
         $invoice = Invoice::with([
@@ -241,6 +291,10 @@ class InvoiceController extends Controller
 
         $invoice = Invoice::findOrFail($id);
 
+         // simpan data sebelum update
+        $nominalSebelum = $invoice->nominal_dp;
+        $statusSebelum  = $invoice->status;
+
         $totalDibayar =
             $invoice->nominal_dp +
             $request->nominal_dp;
@@ -260,6 +314,36 @@ class InvoiceController extends Controller
             'status' => $status
         ]);
 
+        HistoryTransaction::create([
+
+            'invoice_id'
+                => $invoice->id,
+
+            'nomor_invoice'
+                => $invoice->nomor_invoice,
+
+            'tipe_transaksi'
+                => 'payment',
+
+            'nominal_sebelum'
+                => $nominalSebelum,
+
+            'nominal_bayar'
+                => $request->nominal_dp,
+
+            'nominal_setelah'
+                => $totalDibayar,
+
+            'status_sebelum'
+                => $statusSebelum,
+
+            'status_setelah'
+                => $status,
+
+            'user_name'
+                => auth()->user()->name ?? 'System'
+        ]);
+
         return redirect()
             ->route('invoice.show', $invoice->id)
             ->with(
@@ -267,4 +351,6 @@ class InvoiceController extends Controller
                 'Pembayaran berhasil disimpan'
             );
     }
+
+    
 }

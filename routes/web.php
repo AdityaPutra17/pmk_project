@@ -11,6 +11,7 @@ use App\Http\Controllers\SalesOrdersController;
 use App\Http\Controllers\DeliveryOrdersController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HistoryTransactionController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 
@@ -63,6 +64,11 @@ Route::middleware(['auth'])->group(function () {
         [InvoiceController::class,'store']
     );
 
+    Route::post(
+        '/invoice/{id}/update-jenis',
+        [InvoiceController::class, 'updateJenisInvoice']
+    )->name('invoice.updateJenis');
+
     Route::get(
         '/invoice/{id}',
         [InvoiceController::class, 'show']
@@ -72,4 +78,9 @@ Route::middleware(['auth'])->group(function () {
         '/invoice/{id}/payment',
         [InvoiceController::class, 'storePayment']
     )->name('invoice.payment.store');
+
+    Route::get(
+        '/historytransaction',
+        [HistoryTransactionController::class,'index']
+    )->name('history.index');
 });

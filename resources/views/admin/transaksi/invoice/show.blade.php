@@ -31,12 +31,12 @@
                     Kembali
                 </a>
                 {{-- Contoh Tombol Cetak (Optional) --}}
-                <button class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm">
+                <a href="{{ route('invoice.print', $invoice->id) }}" target="_blank" class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
                     Cetak
-                </button>
+                </a>
             </div>
         </div>
 
@@ -63,9 +63,51 @@
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-xs font-medium text-slate-500 uppercase mb-1">Jenis Invoice</label>
-                                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-slate-700 text-sm font-medium">
-                                    {{ strtoupper($invoice->jenis_invoice) }}
-                                </div>
+                                <form
+                                    method="POST"
+                                    action="{{ route('invoice.updateJenis', $invoice->id) }}"
+                                >
+                                    @csrf
+
+                                    <div class="flex gap-2">
+
+                                        <select
+                                            name="jenis_invoice"
+                                            class="flex-1 border rounded-lg px-3 py-2 text-sm"
+                                        >
+                                            <option
+                                                value="dp"
+                                                {{ $invoice->jenis_invoice == 'dp' ? 'selected' : '' }}
+                                            >
+                                                DP
+                                            </option>
+
+                                            <option
+                                                value="cicilan"
+                                                {{ $invoice->jenis_invoice == 'cicilan' ? 'selected' : '' }}
+                                            >
+                                                Cicilan
+                                            </option>
+
+                                            <option
+                                                value="pelunasan"
+                                                {{ $invoice->jenis_invoice == 'pelunasan' ? 'selected' : '' }}
+                                            >
+                                                Pelunasan
+                                            </option>
+
+                                        </select>
+
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm"
+                                        >
+                                            Simpan
+                                        </button>
+
+                                    </div>
+
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -197,7 +239,7 @@
 
                     {{-- PPN --}}
                     <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                        <span class="text-sm text-slate-500">PPN (10%)</span>
+                        <span class="text-sm text-slate-500">PPN (11%)</span>
                         <span class="text-sm font-medium text-slate-700">Rp {{ number_format($invoice->ppn_total,0,',','.') }}</span>
                     </div>
 
