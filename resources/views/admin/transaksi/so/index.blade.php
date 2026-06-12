@@ -443,12 +443,24 @@
     }
 
     // Calculate Grand Total
+    // function calculateGrandTotal() {
+    //     let total = 0;
+    //     document.querySelectorAll('.subtotal').forEach(el => {
+    //         total += parseFloat(el.value.replace(/,/g, '')) || 0;
+    //     });
+    //     document.getElementById('grand_total').innerText = 'Rp ' + total.toLocaleString('id-ID');
+    // }
+
     function calculateGrandTotal() {
         let total = 0;
+
         document.querySelectorAll('.subtotal').forEach(el => {
-            total += parseFloat(el.value.replace(/,/g, '')) || 0;
+            const value = el.value.replace(/\./g, '');
+            total += parseFloat(value) || 0;
         });
-        document.getElementById('grand_total').innerText = 'Rp ' + total.toLocaleString('id-ID');
+
+        document.getElementById('grand_total').innerText =
+            'Rp ' + total.toLocaleString('id-ID');
     }
 
     // Add Row

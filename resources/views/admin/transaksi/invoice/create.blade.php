@@ -165,7 +165,7 @@
                                 <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
                                     <tr>
 
-                                        <th class="px-6 py-3 font-semibold text-right">DO</th>
+                                        <th class="px-6 py-3 font-semibold">Kode DO</th>
                                         <th class="px-6 py-3 font-semibold">Item</th>
                                         <th class="px-6 py-3 font-semibold text-right">Qty</th>
                                         <th class="px-6 py-3 font-semibold text-right">Harga</th>
