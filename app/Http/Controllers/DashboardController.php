@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\Delivery_orders;
 use App\Models\Sales_orders;
 use App\Models\Sales_order_details;
+use App\Models\PurchaseOrder;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -201,5 +202,44 @@ class DashboardController extends Controller
                 'topProducts'
             )
         );
+    }
+
+    public function dashboardPO()
+    {
+        // totals
+        $totalPo = PurchaseOrder::count();
+        $totalValue = PurchaseOrder::sum('grand_total');
+
+        // group by status (if empty status will be shown as null)
+        $byStatus = PurchaseOrder::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get()
+            ->pluck('count', 'status')
+            ->toArray();
+
+        // monthly counts (last 6 months)
+        $months = [];
+        $counts = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $m = now()->subMonths($i);
+            $label = $m->format('Y-m');
+            $months[] = $label;
+            $counts[] = PurchaseOrder::whereYear('po_date', $m->year)
+                ->whereMonth('po_date', $m->month)
+                ->count();
+        }
+
+        // recent POs
+        $recent = PurchaseOrder::with(['supplier', 'customer'])
+            ->latest()->take(10)->get();
+
+        return view('admin.po.dashboard', compact(
+            'totalPo',
+            'totalValue',
+            'byStatus',
+            'months',
+            'counts',
+            'recent'
+        ));
     }
 }

@@ -352,5 +352,92 @@ class InvoiceController extends Controller
             );
     }
 
+    public function exportExcel()
+    {
+        $invoices = Invoice::with([
+            'customer',
+            'details',
+            'details.salesOrderDetail',
+            'details.salesOrderDetail.item',
+            'deliveryOrders'
+        ])->get();
+
+        $filename = "invoice-detail-" . date('Y-m-d') . ".xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        echo "
+        <table border='1'>
+            <thead>
+                <tr>
+                    <th>No Invoice</th>
+                    <th>Tanggal</th>
+                    <th>Kode Transaksi</th>
+                    <th>Customer</th>
+                    <th>Jenis</th>
+                    <th>Status</th>
+                    <th>Delivery Order</th>
+                    <th>Kode Item</th>
+                    <th>Deskripsi Item</th>
+                    <th>Qty</th>
+                    <th>Satuan</th>
+                    <th>Harga</th>
+                    <th>Subtotal Item</th>
+                    <th>Total DPP</th>
+                    <th>PPN</th>
+                    <th>Grand Total</th>
+                    <th>DP</th>
+                    <th>Catatan</th>
+                </tr>
+            </thead>
+            <tbody>
+        ";
+
+        foreach ($invoices as $invoice) {
+
+            $doList = $invoice->deliveryOrders->pluck('id')->join(',');
+
+            foreach ($invoice->details as $detail) {
+
+                $itemCode = $detail->salesOrderDetail?->item?->kd_item ?? '-';
+                $itemDesc = $detail->salesOrderDetail?->item?->deskripsi ?? '-';
+                $itemSatuan = $detail->salesOrderDetail?->item?->satuan ?? '-';
+
+                echo "
+                <tr>
+                    <td>{$invoice->nomor_invoice}</td>
+                    <td>{$invoice->tanggal_invoice}</td>
+                    <td>{$invoice->kode_transaksi}</td>
+                    <td>{$invoice->customer->nama_customer}</td>
+                    <td>{$invoice->jenis_invoice}</td>
+                    <td>{$invoice->status}</td>
+                    <td>{$doList}</td>
+                    <td>{$itemCode}</td>
+                    <td>{$itemDesc}</td>
+                    <td>{$detail->qty}</td>
+                    <td>{$itemSatuan}</td>
+                    <td>{$detail->harga}</td>
+                    <td>{$detail->subtotal}</td>
+                    <td>{$invoice->total_dpp}</td>
+                    <td>{$invoice->ppn_total}</td>
+                    <td>{$invoice->grand_total}</td>
+                    <td>{$invoice->nominal_dp}</td>
+                    <td>{$invoice->catatan}</td>
+                </tr>
+                ";
+            }
+        }
+
+        echo "
+            </tbody>
+        </table>
+        ";
+
+        exit;
+    }
+
     
 }

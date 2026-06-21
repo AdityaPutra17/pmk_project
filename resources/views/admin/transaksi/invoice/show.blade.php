@@ -73,20 +73,24 @@
 
                                         <select
                                             name="jenis_invoice"
-                                            class="flex-1 border rounded-lg px-3 py-2 text-sm"
+                                            class="flex-1 border rounded-lg px-3 py-2 text-sm" required
                                         >
-                                            <option
+                                            {{-- <option
                                                 value="dp"
                                                 {{ $invoice->jenis_invoice == 'dp' ? 'selected' : '' }}
                                             >
                                                 DP
+                                            </option> --}}
+
+                                            <option selected disabled>
+                                                -- Pilih Jenis Invoice --
                                             </option>
 
                                             <option
                                                 value="cicilan"
                                                 {{ $invoice->jenis_invoice == 'cicilan' ? 'selected' : '' }}
                                             >
-                                                Cicilan
+                                                Partial / Cicilan
                                             </option>
 
                                             <option

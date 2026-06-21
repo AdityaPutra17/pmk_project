@@ -32,8 +32,7 @@ return new class extends Migration
             $table->decimal('total_after_ppn', 18, 2)->default(0);
 
             $table->text('keterangan')->nullable();
-            $table->decimal('qty_delivered', 18, 2)
-                ->default(0);
+            $table->integer('qty_delivered')->default(0);
             $table->timestamps();
         });
     }

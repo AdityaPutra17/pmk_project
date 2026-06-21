@@ -128,7 +128,7 @@
                         <tr>
                             <td width="90">
                                 <img
-                                    src="{{asset('images/logopmk.png')}}"
+                                    src="{{asset('images/logopmknew.png')}}"
                                     class="logo">
                             </td>
                             <td>
@@ -159,7 +159,7 @@
                         FAKTUR PENJUALAN
                     </div>
                     <br>
-                    <table>
+                    <table style="margin-left: 30px">
                         <tr>
                             <td width="80">
                                 Nomor

@@ -12,6 +12,14 @@ use App\Http\Controllers\DeliveryOrdersController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HistoryTransactionController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TopController;
+use App\Http\Controllers\FrancoController;
+use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\JenisItemPOController;
+use App\Http\Controllers\ItemPOController;
+use App\Http\Controllers\CustomerPOController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 
@@ -27,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
+
+    Route::resource('users', UserController::class);
 
     Route::resource('area', AreaController::class);
     Route::resource('sales', SalesController::class);
@@ -83,4 +93,24 @@ Route::middleware(['auth'])->group(function () {
         '/historytransaction',
         [HistoryTransactionController::class,'index']
     )->name('history.index');
+
+    Route::get('/invoice/export/excel', [InvoiceController::class, 'exportExcel'])
+        ->name('invoice.export.excel');
+
+
+    //Purchase Order
+    Route::resource('top', TopController::class);
+    Route::resource('franco', FrancoController::class);
+    Route::resource('po', PurchaseOrderController::class);
+    Route::get('/po/dashboard', [PurchaseOrderController::class, 'dashboard'])->name('po.dashboard');
+    Route::get('/po/list', [PurchaseOrderController::class, 'index'])->name('po.list');
+    Route::resource('jenis-item', JenisItemPOController::class)
+        ->parameters(['jenis-item' => 'jenis_item']);
+    Route::resource('suppliers', SupplierController::class);
+    Route::resource('customerpos', CustomerPOController::class);
+    Route::resource('item-po', ItemPOController::class);
+    Route::get('/po/{id}/print', [PurchaseOrderController::class, 'print'])->name('po.print');
+    Route::get('/dashboardpo', [DashboardController::class, 'dashboardPO'])->name('po.dashboard');
+
+    
 });
