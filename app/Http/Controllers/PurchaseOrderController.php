@@ -166,11 +166,11 @@ class PurchaseOrderController extends Controller
             'franco'
         ])->findOrFail($id);
 
-        return view('admin.po.print', compact('po'));
-    }
+        if ($po->supplier->name === 'pt berkah 1234') {
+            return view('admin.po.print2', compact('po'));
+        }
 
-    public function dashboard()
-    {
-        
+
+        return view('admin.po.print', compact('po'));
     }
 }

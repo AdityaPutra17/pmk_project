@@ -201,15 +201,40 @@
     </div>
 
     <!-- Sidebar Footer -->
-    <div class="p-4 border-t border-gray-200">
-        <div class="flex items-center gap-3 px-2">
+    <div class="p-4 border-t border-gray-200 relative">
+        <button onclick="toggleUserMenu()"
+            class="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-100 transition">
+
             <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span class="text-sm font-bold text-indigo-600">AD</span>
+                <span class="text-sm font-bold text-indigo-600">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </span>
             </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-bold text-gray-800 truncate">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
+
+            <div class="flex-1 min-w-0 text-left">
+                <p class="text-sm font-bold text-gray-800 truncate">
+                    {{ Auth::user()->name }}
+                </p>
+                <p class="text-xs text-gray-500 truncate">
+                    {{ Auth::user()->email }}
+                </p>
             </div>
+
+            <i data-lucide="chevron-up" class="h-4 w-4 text-gray-500"></i>
+        </button>
+
+        <!-- Dropdown -->
+        <div id="userMenu"
+            class="hidden absolute bottom-20 left-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                    class="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50">
+                    <i data-lucide="log-out" class="h-4 w-4"></i>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 </aside>
@@ -217,27 +242,30 @@
 <!-- Mobile Overlay -->
 <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden"></div>
 
-<!-- Toggle Button (Mobile) -->
-<button onclick="toggleSidebar()" class="fixed bottom-4 left-4 z-50 lg:hidden bg-indigo-600 text-white p-3 rounded-full shadow-lg">
-    <i data-lucide="menu" class="h-6 w-6"></i>
+<button id="menuButton"
+    onclick="toggleSidebar()"
+    class="fixed bottom-4 left-4 z-50 lg:hidden bg-indigo-600 text-white px-4 py-3 rounded-full shadow-lg text-xl">
+    ☰
 </button>
+
 
 <!-- Initialize Lucide Icons -->
 <script>
-    // Initialize all icons
-    lucide.createIcons();
 
     // Toggle Sidebar (Mobile)
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        
+        const menuButton = document.getElementById('menuButton');
+
         if (sidebar.classList.contains('-translate-x-full')) {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
+            menuButton.classList.add('hidden'); // sembunyikan burger
         } else {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
+            menuButton.classList.remove('hidden'); // tampilkan lagi
         }
     }
 
@@ -254,4 +282,18 @@
             icon.classList.add('rotate-180');
         }
     }
+
+    function toggleUserMenu() {
+        document.getElementById('userMenu').classList.toggle('hidden');
+    }
+
+    // Tutup dropdown jika klik di luar
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('userMenu');
+
+        if (!e.target.closest('#userMenu') &&
+            !e.target.closest('[onclick="toggleUserMenu()"]')) {
+            menu.classList.add('hidden');
+        }
+    });
 </script>

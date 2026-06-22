@@ -1,8 +1,8 @@
 <header class="bg-white border-b border-gray-200 px-4 lg:px-6 py-3 flex items-center justify-between sticky top-0 z-30">
     <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
-            <div class="h-8 w-8 bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-lg flex items-center justify-center">
-                <i data-lucide="zap" class="h-4 w-4 text-white"></i>
+            <div class="h-8 w-8 rounded-lg flex items-center justify-center">
+               <img src="{{asset('images/logopmknew.png')}}" alt="">
             </div>
             <span class="text-lg font-bold text-gray-800 hidden sm:block">Sales Automation</span>
         </div>

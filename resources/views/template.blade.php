@@ -9,13 +9,13 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logopmknew.png') }}">
     
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 min-h-screen overflow-x-hidden">
 
     @include('layout.sidebar')
     @include('layout.header')
 
     <!-- MAIN CONTENT -->
-    <main class="pl-64 pr-6 pb-6">
+    <main class="pl-0 lg:pl-64 pr-4 sm:pr-6 pb-6">
         @yield('content')
     </main>
 
