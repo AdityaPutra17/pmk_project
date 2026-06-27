@@ -80,7 +80,7 @@
             </div>
             <h2 class="text-xl font-bold text-orange-600">Rp {{ number_format($totalPiutang,0,',','.') }}</h2>
             <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                <div class="bg-orange-500 h-1.5 rounded-full" style="width: 60%"></div>
+                <div class="bg-orange-500 h-1.5 rounded-full" style="width: {{ $piutangProgress }}%"></div>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
             </div>
             <h2 class="text-xl font-bold text-slate-700">{{ $totalDO }}</h2>
             <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                <div class="bg-slate-600 h-1.5 rounded-full" style="width: 70%"></div>
+                <div class="bg-slate-600 h-1.5 rounded-full" style="width: {{ $deliveryProgress }}%"></div>
             </div>
         </div>
 
@@ -107,7 +107,7 @@
             </div>
             <h2 class="text-xl font-bold text-slate-700">{{ $totalInvoice }}</h2>
             <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 85%"></div>
+                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: {{ $invoiceProgress }}%"></div>
             </div>
         </div>
 

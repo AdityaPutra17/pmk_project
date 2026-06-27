@@ -49,6 +49,18 @@ class DashboardController extends Controller
             ['unpaid', 'partial']
         )->sum('grand_total');
 
+        $piutangProgress = $totalSalesOrder
+            ? round(min(100, ($totalPiutang / $totalSalesOrder) * 100))
+            : 0;
+
+        $deliveryProgress = $totalSO
+            ? round(min(100, ($totalDO / $totalSO) * 100))
+            : 0;
+
+        $invoiceProgress = $totalSO
+            ? round(min(100, ($totalInvoice / $totalSO) * 100))
+            : 0;
+
         /*
         |--------------------------------------------------------------------------
         | SALES ORDER CHART
@@ -193,6 +205,9 @@ class DashboardController extends Controller
                 'pendingDelivery',
                 'invoiceBelumLunas',
                 'totalPiutang',
+                'piutangProgress',
+                'deliveryProgress',
+                'invoiceProgress',
                 'chartLabels',
                 'chartData',
                 'invoiceStatus',
