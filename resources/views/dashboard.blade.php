@@ -9,6 +9,10 @@
 
     {{-- HEADER SECTION --}}
     <div class="mb-8">
+        
+        <p class="text-slate-500 mt-1 text-sm font-medium">
+            Welcome {{ Auth::user()->name }}...!
+        </p>
         <h1 class="text-3xl font-bold text-slate-900 tracking-tight">
             Dashboard
         </h1>
