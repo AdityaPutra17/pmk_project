@@ -142,7 +142,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="inline-flex items-center gap-2">
-                                    <a href="{{ route('users.edit', $user->id) }}" class="inline-flex items-center justify-center rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-amber-700 hover:bg-amber-100 transition">Edit</a>
+                                    {{-- <a href="{{ route('users.edit', $user->id) }}" class="inline-flex items-center justify-center rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-amber-700 hover:bg-amber-100 transition">Edit</a> --}}
                                     <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
