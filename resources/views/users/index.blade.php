@@ -11,7 +11,7 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">User Management</h1>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Users Management</h1>
                 <p class="text-slate-500 text-sm mt-1">Kelola seluruh pengguna dan hak akses sistem.</p>
             </div>
             <button onclick="toggleAddUserForm()" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm shadow-indigo-500/30 transition-all duration-200 hover:shadow-lg active:scale-95">

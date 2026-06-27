@@ -79,10 +79,10 @@ Route::middleware(['auth'])->group(function () {
         [InvoiceController::class, 'updateJenisInvoice']
     )->name('invoice.updateJenis');
 
-    Route::get(
-        '/invoice/{id}',
-        [InvoiceController::class, 'show']
-    )->name('invoice.show');
+    // Route::get(
+    //     '/invoice/{id}',
+    //     [InvoiceController::class, 'show']
+    // )->name('invoice.show');
     
     Route::post(
         '/invoice/{id}/payment',
