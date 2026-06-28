@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Sales_orders;
+use App\Models\Delivery_order_details;
 use App\Models\Item;
 
 class Sales_order_details extends Model
@@ -17,6 +18,11 @@ class Sales_order_details extends Model
     {
         // return $this->belongsTo(Sales_orders::class);
         return $this->belongsTo( Sales_orders::class, 'sales_order_id' );
+    }
+
+    public function deliveryDetails()
+    {
+        return $this->hasMany(Delivery_order_details::class, 'sales_order_detail_id');
     }
 
     public function item()

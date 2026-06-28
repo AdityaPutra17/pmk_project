@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Customer;
 use App\Models\Sales;
 use App\Models\Sales_order_details;
+use App\Models\Delivery_orders;
 
 
 class Sales_orders extends Model
@@ -18,6 +19,11 @@ class Sales_orders extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function deliveryOrders()
+    {
+        return $this->hasMany(Delivery_orders::class, 'sales_order_id');
     }
 
     public function sales()

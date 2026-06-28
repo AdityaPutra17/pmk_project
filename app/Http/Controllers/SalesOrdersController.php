@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Sales_orders;
+use App\Models\Sales_order_details;
 use App\Models\Customer;
 use App\Models\Sales;
 use App\Models\Item;
@@ -189,9 +190,29 @@ class SalesOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Sales_orders $sales_orders)
+    public function destroy($id)
     {
-        //
+        $salesOrder = Sales_orders::findOrFail($id);
 
+        DB::transaction(function () use ($salesOrder) {
+
+        // hapus detail delivery
+        foreach ($salesOrder->details as $detail) {
+            $detail->deliveryDetails()->delete();
+        }
+
+        // hapus detail SO
+        $salesOrder->details()->delete();
+
+        // hapus Delivery Order
+        $salesOrder->deliveryOrders()->delete();
+
+        // terakhir hapus SO
+        $salesOrder->delete();
+    });
+
+        return redirect()
+            ->route('sales-orders.index')
+            ->with('success', 'Sales Order berhasil dihapus.');
     }
 }
