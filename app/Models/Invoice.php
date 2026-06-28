@@ -29,7 +29,7 @@ class Invoice extends Model
     public function details()
     {
         return $this->hasMany(
-            invoice_details::class,
+            Invoice_details::class,
             'invoice_id'
         );
     }
