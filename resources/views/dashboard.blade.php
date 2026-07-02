@@ -162,7 +162,7 @@
                 </div>
                 @endforelse
             </div>
-            <button class="w-full mt-4 py-2 text-sm text-slate-500 hover:text-indigo-600 font-medium transition-colors">Lihat Semua &rarr;</button>
+            <a href="{{ route('sales-orders.index') }}" class="w-full mt-4 py-2 text-sm text-slate-500 hover:text-indigo-600 font-medium transition-colors">Lihat Semua &rarr;</a>
         </div>
 
     </div>

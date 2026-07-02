@@ -481,8 +481,8 @@
 
                             <div class="bold">
 
-                                {{-- HARMOKO COKRO Y. --}}
-                                {{ $invoice->deliveryOrder->sales_order->sales->name ?? '-' }}
+                                HARMOKO COKRO Y.
+                                {{-- {{ $invoice->deliveryOrder->sales_order->sales->name ?? '-' }} --}}
 
                             </div>
 

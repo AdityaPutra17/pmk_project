@@ -19,7 +19,7 @@
             </div>
             
             <div class="mt-4 sm:mt-0">
-                <a href="{{ route('invoice.export.excel') }}"
+                <a href="{{ route('invoice.export.excel') }}" 
                     class="inline-flex items-center justify-center px-5 py-2.5 border border-green-500 text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 transition-all">
 
                         Export Excel (.xls)
