@@ -241,6 +241,16 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <div class="text-sm text-slate-600">
+                    Menampilkan <span class="font-medium">{{ $items->firstItem() ?? 0 }}</span> hingga <span class="font-medium">{{ $items->lastItem() ?? 0 }}</span> dari <span class="font-medium">{{ $items->total() }}</span> data
+                </div>
+                <div>
+                    {{ $items->links() }}
+                </div>
+            </div>
         </div>
 
     </div>

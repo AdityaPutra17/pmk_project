@@ -12,7 +12,7 @@ class JenisItemPOController extends Controller
      */
     public function index()
     {
-        $jenisItems = Jenis_Item_PO::latest()->get();
+        $jenisItems = Jenis_Item_PO::latest()->paginate(15);
 
         return view('admin.po.jenisitempo.index', compact('jenisItems'));
     }

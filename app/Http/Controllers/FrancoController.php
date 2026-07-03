@@ -9,7 +9,7 @@ class FrancoController extends Controller
 {
     public function index()
     {
-        $francos = Franco::latest()->get();
+        $francos = Franco::latest()->paginate(15);
 
         return view('admin.po.franco.index', compact('francos'));
     }

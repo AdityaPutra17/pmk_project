@@ -13,7 +13,7 @@ class ItemCategoriesController extends Controller
     public function index()
     {
         //
-        $itemCategories = ItemCategories::all();
+        $itemCategories = ItemCategories::paginate(15);
         return view('admin.itemcategories.index', compact('itemCategories'));
     }
 

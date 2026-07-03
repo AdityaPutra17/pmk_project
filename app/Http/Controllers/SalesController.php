@@ -14,7 +14,7 @@ class SalesController extends Controller
     public function index()
     {
         //
-        $sales = Sales::with('area')->get();
+        $sales = Sales::with('area')->paginate(15);
         $areas = Area::all();
         return view('admin.sales.index', compact('sales', 'areas'));
     }

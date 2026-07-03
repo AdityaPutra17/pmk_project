@@ -19,7 +19,7 @@ class SalesOrdersController extends Controller
     public function index()
     {
         //
-        $salesOrders = Sales_orders::with([ 'customer', 'sales', 'details.item' ]) ->latest() ->get();
+        $salesOrders = Sales_orders::with([ 'customer', 'sales', 'details.item' ]) ->latest() ->paginate(15);
         $customers = Customer::all();
         $sales = Sales::all();
         $items = Item::all();

@@ -14,7 +14,7 @@ class ItemController extends Controller
     public function index()
     {
         //
-        $items = Item::with('category')->get();
+        $items = Item::with('category')->paginate(15);
         $categories = ItemCategories::all();
         return view('admin.items.index', compact('items', 'categories'));
     }

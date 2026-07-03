@@ -13,7 +13,7 @@ class ItemPOController extends Controller
      */
     public function index()
     {
-        $itemPOs = ItemPO::with('itemType')->latest()->get();
+        $itemPOs = ItemPO::with('itemType')->latest()->paginate(15);
         $jenisItems = Jenis_Item_PO::orderBy('name')->get();
         $newItemCode = $this->generateItemCode();
 

@@ -12,7 +12,7 @@ class CustomerPOController extends Controller
      */
     public function index()
     {
-        $customerpos = CustomerPO::latest()->get();
+        $customerpos = CustomerPO::latest()->paginate(15);
 
         return view('admin.po.customerpo.index', compact('customerpos'));
     }

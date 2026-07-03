@@ -181,9 +181,6 @@
                             </td>
                             <td class="px-6 py-4">
                                 <a href="tel:{{ $s->phone }}" class="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.129a11.042 11.042 0 005.516 5.516l1.129-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 012.004-.51M21 15a2 2 0 01-2 2h-4l-3 3" />
-                                    </svg>
                                     {{ $s->phone }}
                                 </a>
                             </td>
@@ -232,6 +229,16 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <div class="text-sm text-slate-600">
+                    Menampilkan <span class="font-medium">{{ $sales->firstItem() ?? 0 }}</span> hingga <span class="font-medium">{{ $sales->lastItem() ?? 0 }}</span> dari <span class="font-medium">{{ $sales->total() }}</span> data
+                </div>
+                <div>
+                    {{ $sales->links() }}
+                </div>
             </div>
         </div>
 

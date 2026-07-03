@@ -13,7 +13,7 @@ class AreaController extends Controller
     public function index()
     {
         //
-        $areas = Area::all();
+        $areas = Area::paginate(15);
         return view('admin.area.index', compact('areas'));
     }
 

@@ -20,7 +20,7 @@ class DeliveryOrdersController extends Controller
             'sales_order',
             'customer',
             'details.item',
-        ])->get();
+        ])->paginate(15);
 
         $salesOrders = Sales_orders::with([
             'customer',

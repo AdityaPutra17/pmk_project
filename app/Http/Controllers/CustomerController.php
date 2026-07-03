@@ -18,7 +18,7 @@ class CustomerController extends Controller
         //
         
         // $customers = Customer::with('sales', 'area')->get();\
-        $customers = Customer::all();
+        $customers = Customer::paginate(15);
         $sales = Sales::with('area')->get();
         $areas = Area::all();
         return view('admin.customers.index', compact('customers', 'sales', 'areas'));

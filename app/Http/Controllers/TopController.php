@@ -9,7 +9,7 @@ class TopController extends Controller
 {
     public function index()
     {
-        $tops = Top::latest()->get();
+        $tops = Top::latest()->paginate(15);
         $newTopCode = $this->generateTopCode();
 
         return view('admin.po.top.index', compact('tops', 'newTopCode'));

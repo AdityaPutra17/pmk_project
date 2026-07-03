@@ -18,7 +18,7 @@ class InvoiceController extends Controller
         $invoices = Invoice::with([
             'deliveryOrder',
             'customer'
-        ])->latest()->get();
+        ])->latest()->paginate(15);
 
         return view(
             'admin.transaksi.invoice.index',

@@ -158,8 +158,17 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <div class="text-sm text-slate-600">
+                    Menampilkan <span class="font-medium">{{ $jenisItems->firstItem() ?? 0 }}</span> hingga <span class="font-medium">{{ $jenisItems->lastItem() ?? 0 }}</span> dari <span class="font-medium">{{ $jenisItems->total() }}</span> data
+                </div>
+                <div>
+                    {{ $jenisItems->links() }}
+                </div>
+            </div>
         </div>
-    </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 transition-opacity duration-300" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 z-10 overflow-y-auto">

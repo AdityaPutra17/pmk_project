@@ -16,7 +16,7 @@ class PurchaseOrderController extends Controller
 {
     public function index()
     {
-        $purchaseOrders = PurchaseOrder::with(['supplier', 'customer', 'top', 'franco'])->latest()->get();
+        $purchaseOrders = PurchaseOrder::with(['supplier', 'customer', 'top', 'franco'])->latest()->paginate(15);
         $suppliers = Supplier::orderBy('name')->get();
         $customers = CustomerPO::orderBy('name')->get();
         $tops = Top::orderBy('description')->get();

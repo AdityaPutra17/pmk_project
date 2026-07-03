@@ -25,7 +25,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
         {{-- SALES ORDER --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+        <a href="{{ route('sales-orders.index') }}" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
             <div class="relative z-10">
                 <div class="flex justify-between items-center mb-1">
@@ -38,10 +38,10 @@
                 <p class="text-xs text-slate-400 mt-1 font-medium">Active orders</p>
                 <h2 class="text-xl font-bold text-emerald-600 truncate">Rp {{ number_format($totalSalesOrder,0,',','.') }}</h2>
             </div>
-        </div>
+        </a>
 
         {{-- CUSTOMER --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+        <a href="{{ route('customers.index') }}" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-100 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
             <div class="relative z-10">
                 <div class="flex justify-between items-center mb-3">
@@ -53,10 +53,10 @@
                 <h2 class="text-xl font-bold text-slate-800">{{ $totalCustomer }}</h2>
                 <p class="text-xs text-slate-400 mt-1 font-medium">Registered</p>
             </div>
-        </div>
+        </a>
 
         {{-- PENDING DELIVERY --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+        <a href="{{ route('delivery-orders.index') }}" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-100 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
             <div class="relative z-10">
                 <div class="flex justify-between items-center mb-3">
@@ -68,11 +68,11 @@
                 <h2 class="text-xl font-bold text-orange-600">{{ $pendingDelivery }}</h2>
                 <p class="text-xs text-orange-500 mt-1 font-medium">Needs attention</p>
             </div>
-        </div>
+        </a>
 
         
         {{-- TOTAL PIUTANG --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden">
+        <a href="{{ route('invoice.index') }}" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Invoice Belum Lunas</span>
             <div class="flex items-center mb-2">
                 <h2 class="text-xl font-bold text-red-600 mx-2">{{ $invoiceBelumLunas }}</h2> 
@@ -86,7 +86,7 @@
             <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
                 <div class="bg-orange-500 h-1.5 rounded-full" style="width: {{ $piutangProgress }}%"></div>
             </div>
-        </div>
+        </a>
 
     </div>
 
