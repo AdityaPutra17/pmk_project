@@ -10,11 +10,15 @@ class ItemCategoriesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $itemCategories = ItemCategories::paginate(15);
-        return view('admin.itemcategories.index', compact('itemCategories'));
+        $search = $request->input('search');
+        $itemCategories = ItemCategories::when($search, function($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%')
+                  ->orWhere('kd_category', 'like', '%'.$search.'%');
+        })->paginate(15)->appends(['search' => $search]);
+        return view('admin.itemcategories.index', compact('itemCategories', 'search'));
     }
 
     /**

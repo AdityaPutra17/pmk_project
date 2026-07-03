@@ -13,16 +13,22 @@ use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
         $invoices = Invoice::with([
             'deliveryOrder',
             'customer'
-        ])->latest()->paginate(15);
+        ])->when($search, function($query) use ($search) {
+            $query->where('nomor_invoice', 'like', '%'.$search.'%')
+                  ->orWhereHas('customer', function($q) use ($search) {
+                      $q->where('nama_customer', 'like', '%'.$search.'%');
+                  });
+        })->latest()->paginate(15)->appends(['search' => $search]);
 
         return view(
             'admin.transaksi.invoice.index',
-            compact('invoices')
+            compact('invoices', 'search')
         );
     }
 

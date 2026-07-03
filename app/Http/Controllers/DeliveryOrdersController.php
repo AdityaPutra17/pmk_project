@@ -14,13 +14,19 @@ class DeliveryOrdersController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
         $deliveryOrders = Delivery_orders::with([
             'sales_order',
             'customer',
             'details.item',
-        ])->paginate(15);
+        ])->when($search, function($query) use ($search) {
+            $query->where('nomor_do', 'like', '%'.$search.'%')
+                  ->orWhereHas('customer', function($q) use ($search) {
+                      $q->where('nama_customer', 'like', '%'.$search.'%');
+                  });
+        })->paginate(15)->appends(['search' => $search]);
 
         $salesOrders = Sales_orders::with([
             'customer',
@@ -29,7 +35,7 @@ class DeliveryOrdersController extends Controller
 
         return view(
             'admin.transaksi.do.index',
-            compact('deliveryOrders', 'salesOrders')
+            compact('deliveryOrders', 'salesOrders', 'search')
         );
     }
 

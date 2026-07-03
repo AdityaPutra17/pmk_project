@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 
 class FrancoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $francos = Franco::latest()->paginate(15);
+        $search = $request->input('search');
+        $francos = Franco::when($search, function($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%');
+        })->latest()->paginate(15)->appends(['search' => $search]);
 
-        return view('admin.po.franco.index', compact('francos'));
+        return view('admin.po.franco.index', compact('francos', 'search'));
     }
 
     public function create()

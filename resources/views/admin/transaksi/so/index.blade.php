@@ -224,7 +224,24 @@
                 </form>
             </div>
         </div>
-
+        <!-- Search Section -->
+        <div class="mb-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <form method="GET" class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1">
+                    <input type="text" name="search" value="{{ $search ?? '' }}"
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                        placeholder="Cari berdasarkan nomor SO atau nama customer...">
+                </div>
+                <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all">
+                    Cari
+                </button>
+                @if($search)
+                    <a href="{{ route('so.index') }}" class="px-6 py-2.5 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium rounded-lg transition-all">
+                        Reset
+                    </a>
+                @endif
+            </form>
+        </div>
         <!-- Data Table Section -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">

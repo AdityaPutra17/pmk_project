@@ -11,12 +11,17 @@ class SalesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $sales = Sales::with('area')->paginate(15);
+        $search = $request->input('search');
+        $sales = Sales::with('area')->when($search, function($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%')
+                  ->orWhere('kd_sales', 'like', '%'.$search.'%')
+                  ->orWhere('phone', 'like', '%'.$search.'%');
+        })->paginate(15)->appends(['search' => $search]);
         $areas = Area::all();
-        return view('admin.sales.index', compact('sales', 'areas'));
+        return view('admin.sales.index', compact('sales', 'areas', 'search'));
     }
 
     /**

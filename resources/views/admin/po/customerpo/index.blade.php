@@ -120,6 +120,25 @@
             </div>
         </div>
 
+        <!-- Search Section -->
+        <div class="mb-8 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <form method="GET" class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1">
+                    <input type="text" name="search" value="{{ $search ?? '' }}"
+                        class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                        placeholder="Cari berdasarkan kode atau nama customer...">
+                </div>
+                <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all">
+                    Cari
+                </button>
+                @if($search)
+                    <a href="{{ route('customerpos.index') }}" class="px-6 py-2.5 bg-slate-300 hover:bg-slate-400 text-slate-800 font-medium rounded-lg transition-all">
+                        Reset
+                    </a>
+                @endif
+            </form>
+        </div>
+
         <!-- Table Section -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">

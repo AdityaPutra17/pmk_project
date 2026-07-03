@@ -10,11 +10,15 @@ class CustomerPOController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customerpos = CustomerPO::latest()->paginate(15);
+        $search = $request->input('search');
+        $customerpos = CustomerPO::when($search, function($query) use ($search) {
+            $query->where('customer_code', 'like', '%'.$search.'%')
+                  ->orWhere('name', 'like', '%'.$search.'%');
+        })->latest()->paginate(15)->appends(['search' => $search]);
 
-        return view('admin.po.customerpo.index', compact('customerpos'));
+        return view('admin.po.customerpo.index', compact('customerpos', 'search'));
     }
 
     /**

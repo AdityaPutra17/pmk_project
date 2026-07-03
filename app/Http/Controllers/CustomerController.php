@@ -13,15 +13,20 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         
         // $customers = Customer::with('sales', 'area')->get();\
-        $customers = Customer::paginate(15);
+        $search = $request->input('search');
+        $customers = Customer::when($search, function($query) use ($search) {
+            $query->where('nama_customer', 'like', '%'.$search.'%')
+                  ->orWhere('alamat', 'like', '%'.$search.'%')
+                  ->orWhere('no_telp', 'like', '%'.$search.'%');
+        })->paginate(15)->appends(['search' => $search]);
         $sales = Sales::with('area')->get();
         $areas = Area::all();
-        return view('admin.customers.index', compact('customers', 'sales', 'areas'));
+        return view('admin.customers.index', compact('customers', 'sales', 'areas', 'search'));
     }
 
     /**

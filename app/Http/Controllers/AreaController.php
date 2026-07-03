@@ -10,11 +10,15 @@ class AreaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $areas = Area::paginate(15);
-        return view('admin.area.index', compact('areas'));
+        $search = $request->input('search');
+        $areas = Area::when($search, function($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%')
+                  ->orWhere('kd_area', 'like', '%'.$search.'%');
+        })->paginate(15)->appends(['search' => $search]);
+        return view('admin.area.index', compact('areas', 'search'));
     }
 
     /**

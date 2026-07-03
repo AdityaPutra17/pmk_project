@@ -16,15 +16,21 @@ class SalesOrdersController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $salesOrders = Sales_orders::with([ 'customer', 'sales', 'details.item' ]) ->latest() ->paginate(15);
+        $search = $request->input('search');
+        $salesOrders = Sales_orders::with([ 'customer', 'sales', 'details.item' ])->when($search, function($query) use ($search) {
+            $query->where('nomor_so', 'like', '%'.$search.'%')
+                  ->orWhereHas('customer', function($q) use ($search) {
+                      $q->where('nama_customer', 'like', '%'.$search.'%');
+                  });
+        })->latest()->paginate(15)->appends(['search' => $search]);
         $customers = Customer::all();
         $sales = Sales::all();
         $items = Item::all();
 
-        return view('admin.transaksi.so.index', compact('salesOrders', 'customers', 'sales', 'items'));
+        return view('admin.transaksi.so.index', compact('salesOrders', 'customers', 'sales', 'items', 'search'));
     }
 
     /**

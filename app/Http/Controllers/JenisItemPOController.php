@@ -10,11 +10,15 @@ class JenisItemPOController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jenisItems = Jenis_Item_PO::latest()->paginate(15);
+        $search = $request->input('search');
+        $jenisItems = Jenis_Item_PO::when($search, function($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%')
+                  ->orWhere('code', 'like', '%'.$search.'%');
+        })->latest()->paginate(15)->appends(['search' => $search]);
 
-        return view('admin.po.jenisitempo.index', compact('jenisItems'));
+        return view('admin.po.jenisitempo.index', compact('jenisItems', 'search'));
     }
 
     /**

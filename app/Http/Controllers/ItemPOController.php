@@ -11,13 +11,17 @@ class ItemPOController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $itemPOs = ItemPO::with('itemType')->latest()->paginate(15);
+        $search = $request->input('search');
+        $itemPOs = ItemPO::with('itemType')->when($search, function($query) use ($search) {
+            $query->where('item_code', 'like', '%'.$search.'%')
+                  ->orWhere('description', 'like', '%'.$search.'%');
+        })->latest()->paginate(15)->appends(['search' => $search]);
         $jenisItems = Jenis_Item_PO::orderBy('name')->get();
         $newItemCode = $this->generateItemCode();
 
-        return view('admin.po.itempo.index', compact('itemPOs', 'jenisItems', 'newItemCode'));
+        return view('admin.po.itempo.index', compact('itemPOs', 'jenisItems', 'newItemCode', 'search'));
     }
 
     /**

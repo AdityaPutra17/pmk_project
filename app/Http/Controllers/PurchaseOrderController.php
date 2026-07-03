@@ -14,16 +14,22 @@ use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $purchaseOrders = PurchaseOrder::with(['supplier', 'customer', 'top', 'franco'])->latest()->paginate(15);
+        $search = $request->input('search');
+        $purchaseOrders = PurchaseOrder::with(['supplier', 'customer', 'top', 'franco'])->when($search, function($query) use ($search) {
+            $query->where('po_number', 'like', '%'.$search.'%')
+                  ->orWhereHas('supplier', function($q) use ($search) {
+                      $q->where('name', 'like', '%'.$search.'%');
+                  });
+        })->latest()->paginate(15)->appends(['search' => $search]);
         $suppliers = Supplier::orderBy('name')->get();
         $customers = CustomerPO::orderBy('name')->get();
         $tops = Top::orderBy('description')->get();
         $francos = Franco::orderBy('name')->get();
         $items = ItemPO::orderBy('description')->get();
 
-        return view('admin.po.index', compact('purchaseOrders', 'suppliers', 'customers', 'tops', 'francos', 'items'));
+        return view('admin.po.index', compact('purchaseOrders', 'suppliers', 'customers', 'tops', 'francos', 'items', 'search'));
     }
 
     public function create()

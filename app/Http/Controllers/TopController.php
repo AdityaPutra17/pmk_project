@@ -7,12 +7,16 @@ use Illuminate\Http\Request;
 
 class TopController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tops = Top::latest()->paginate(15);
+        $search = $request->input('search');
+        $tops = Top::when($search, function($query) use ($search) {
+            $query->where('code', 'like', '%'.$search.'%')
+                  ->orWhere('description', 'like', '%'.$search.'%');
+        })->latest()->paginate(15)->appends(['search' => $search]);
         $newTopCode = $this->generateTopCode();
 
-        return view('admin.po.top.index', compact('tops', 'newTopCode'));
+        return view('admin.po.top.index', compact('tops', 'newTopCode', 'search'));
     }
 
     public function create()
