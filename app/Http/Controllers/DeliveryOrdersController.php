@@ -203,9 +203,20 @@ class DeliveryOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Delivery_orders $delivery_orders)
+    public function destroy($id)
     {
-        //
+        $deliveryOrder = Delivery_orders::findOrFail($id);
+
+        DB::transaction(function () use ($deliveryOrder) {
+            // Hapus semua detail delivery order
+            $deliveryOrder->details()->delete();
+            // Hapus delivery order
+            $deliveryOrder->delete();
+        });
+
+        return redirect()
+            ->route('delivery-orders.index')
+            ->with('success', 'Delivery Order berhasil dihapus.');
     }
 
     public function print($id)

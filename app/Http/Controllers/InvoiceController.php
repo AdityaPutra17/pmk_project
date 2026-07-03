@@ -445,5 +445,19 @@ class InvoiceController extends Controller
         exit;
     }
 
-    
+    public function destroy($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        DB::transaction(function () use ($invoice) {
+            // Hapus semua detail invoice
+            $invoice->details()->delete();
+            // Hapus invoice
+            $invoice->delete();
+        });
+
+        return redirect()
+            ->route('invoice.index')
+            ->with('success', 'Invoice berhasil dihapus.');
+    }
 }
