@@ -236,7 +236,7 @@
                     Cari
                 </button>
                 @if($search)
-                    <a href="{{ route('so.index') }}" class="px-6 py-2.5 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium rounded-lg transition-all">
+                    <a href="{{ route('sales-orders.index') }}" class="px-6 py-2.5 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium rounded-lg transition-all">
                         Reset
                     </a>
                 @endif
