@@ -16,7 +16,7 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $totalInvoices = Invoice::count();
+        $totalInvoices = Invoice::all();
         $invoices = Invoice::with([
             'deliveryOrder',
             'customer'
@@ -29,7 +29,7 @@ class InvoiceController extends Controller
 
         return view(
             'admin.transaksi.invoice.index',
-            compact('invoices', 'search')
+            compact('invoices', 'search', 'totalInvoices')
         );
     }
 
