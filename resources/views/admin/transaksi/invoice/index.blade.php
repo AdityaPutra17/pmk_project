@@ -41,7 +41,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Invoice</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ $invoices->count() }}</p>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalInvoices->count() }}</p>
                     </div>
                     <div class="p-3 bg-indigo-50 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -56,7 +56,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Lunas</p>
-                        <p class="text-2xl font-bold text-green-600 mt-1">{{ $invoices->where('status', 'lunas')->count() }}</p>
+                        <p class="text-2xl font-bold text-green-600 mt-1">{{ $totalInvoices->where('status', 'lunas')->count() }}</p>
                     </div>
                     <div class="p-3 bg-green-50 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -70,8 +70,8 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Cicilan</p>
-                        <p class="text-2xl font-bold text-blue-600 mt-1">{{ $invoices->where('status', 'partial')->count() }}</p>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Partial</p>
+                        <p class="text-2xl font-bold text-blue-600 mt-1">{{ $totalInvoices->where('status', 'partial')->count() }}</p>
                     </div>
                     <div class="p-3 bg-blue-50 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -86,7 +86,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Belum Lunas</p>
-                        <p class="text-2xl font-bold text-yellow-600 mt-1">{{ $invoices->where('status', 'belum_lunas')->count() }}</p>
+                        <p class="text-2xl font-bold text-yellow-600 mt-1">{{ $totalInvoices->where('status', 'belum_lunas')->count() }}</p>
                     </div>
                     <div class="p-3 bg-yellow-50 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
