@@ -70,7 +70,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Partial</p>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Partials</p>
                         <p class="text-2xl font-bold text-blue-600 mt-1">{{ $totalInvoices->where('status', 'partial')->count() }}</p>
                     </div>
                     <div class="p-3 bg-blue-50 rounded-lg">
