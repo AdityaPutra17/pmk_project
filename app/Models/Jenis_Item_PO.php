@@ -15,4 +15,5 @@ class Jenis_Item_PO extends Model
         'code',
         'name',
     ];
+    
 }

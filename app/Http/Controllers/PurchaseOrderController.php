@@ -28,8 +28,9 @@ class PurchaseOrderController extends Controller
         $tops = Top::orderBy('description')->get();
         $francos = Franco::orderBy('name')->get();
         $items = ItemPO::orderBy('description')->get();
+        $newPONumber = $this->generatePONumber();
 
-        return view('admin.po.index', compact('purchaseOrders', 'suppliers', 'customers', 'tops', 'francos', 'items', 'search'));
+        return view('admin.po.index', compact('purchaseOrders', 'suppliers', 'customers', 'tops', 'francos', 'items', 'search', 'newPONumber'));
     }
 
     public function create()
@@ -37,12 +38,30 @@ class PurchaseOrderController extends Controller
         return redirect()->route('po.index');
     }
 
+    private function generatePONumber()
+    {
+        $year = date('y');
+
+        $lastPO = PurchaseOrder::where('po_number', 'like', 'PO' . $year . '%')
+            ->orderBy('po_number', 'desc')
+            ->first();
+
+        if ($lastPO) {
+            $lastNumber = (int) substr($lastPO->po_number, -4);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        return 'PO' . $year . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
     public function store(Request $request)
     {
         // dd($request->all());
         $request->validate([
 
-            'po_number' => 'required|unique:purchase_orders',
+            // 'po_number' => 'required|unique:purchase_orders',
 
             'supplier_id' => 'required',
 
@@ -72,7 +91,7 @@ class PurchaseOrderController extends Controller
 
             $po = PurchaseOrder::create([
 
-                'po_number' => $request->po_number,
+                'po_number' => $this->generatePONumber(),
                 'po_date' => $request->po_date,
 
                 'supplier_id' => $request->supplier_id,
@@ -155,11 +174,20 @@ class PurchaseOrderController extends Controller
         return redirect()->route('po.index')->with('success', 'Purchase Order berhasil diperbarui.');
     }
 
-    public function destroy(PurchaseOrder $purchaseOrder)
+    public function destroy($id)
     {
-        $purchaseOrder->delete();
+        
+        $purchaseOrder = PurchaseOrder::findOrFail($id);
 
-        return redirect()->route('po.index')->with('success', 'Purchase Order berhasil dihapus.');
+        try{
+            $purchaseOrder->delete();
+
+            return redirect()->route('po.index')->with('success', 'Purchase Order Deleted Successfully');
+
+        } catch (\Exception $e){
+                return redirect()->route('po.index')->with('error', 'Failed to delete PO: ' .$e->getMessage());
+        }
+
     }
 
     public function print($id)

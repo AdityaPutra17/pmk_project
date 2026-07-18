@@ -68,9 +68,11 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="po_number" class="block text-sm font-medium text-slate-700">Nomor PO</label>
-                            <input type="text" name="po_number" id="po_number" required value="{{ old('po_number') }}"
-                                class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
-                                placeholder="PO/2026/001">
+                            <input type="text"
+                                id="po_number"
+                                value="{{ $newPONumber }}"
+                                readonly
+                                class="block w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed">
                         </div>
 
                         <div class="space-y-2">
@@ -148,7 +150,7 @@
                                 <table class="w-full text-sm" id="itemTable">
 
                                     <thead>
-                                        <tr class="bg-slate-100 text-slate-700">
+                                        <tr class="bg-indigo-100 text-slate-700">
                                             <th class="px-4 py-3 text-left">Item</th>
                                             <th class="px-4 py-3 text-left w-32">Qty</th>
                                             <th class="px-4 py-3 text-left w-40">Harga</th>
@@ -173,19 +175,19 @@
 
                         <div class="space-y-2">
                             <label for="subtotal" class="block text-sm font-medium text-slate-700">Subtotal</label>
-                            <input type="number" step="0.01" name="subtotal" id="subtotal" required value="{{ old('subtotal') }}"
+                            <input type="text" step="0.01" name="subtotal" id="subtotal" required value="{{ old('subtotal') }}"
                                 class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200">
                         </div>
 
                         <div class="space-y-2">
                             <label for="tax" class="block text-sm font-medium text-slate-700">Tax</label>
-                            <input type="number" step="0.01" name="tax" id="tax" required value="{{ old('tax') }}"
+                            <input type="textr" step="0.01" name="tax" id="tax" required value="{{ old('tax') }}"
                                 class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200">
                         </div>
 
                         <div class="space-y-2">
                             <label for="grand_total" class="block text-sm font-medium text-slate-700">Grand Total</label>
-                            <input type="number" step="0.01" name="grand_total" id="grand_total" required value="{{ old('grand_total') }}"
+                            <input type="text" step="0.01" name="grand_total" id="grand_total" required value="{{ old('grand_total') }}"
                                 class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200">
                         </div>
 
@@ -345,7 +347,7 @@ function addRow()
 
         <td class="p-3">
             <input
-                type="number"
+                type="text"
                 step="0.01"
                 name="items[${rowIndex}][qty]"
                 class="qty w-full rounded-lg border border-slate-300 px-3 py-2 text-right focus:ring-2 focus:ring-indigo-500">
@@ -353,7 +355,7 @@ function addRow()
 
         <td class="p-3">
             <input
-                type="number"
+                type="text"
                 step="0.01"
                 name="items[${rowIndex}][price]"
                 class="price w-full rounded-lg border border-slate-300 px-3 py-2 text-right focus:ring-2 focus:ring-indigo-500">
@@ -361,7 +363,7 @@ function addRow()
 
         <td class="p-3">
             <input
-                type="number"
+                type="text"
                 step="0.01"
                 name="items[${rowIndex}][total]"
                 class="line-total w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-right font-medium"
@@ -392,11 +394,25 @@ function addRow()
     </tr>
     `;
 
+    
     document.querySelector('#itemTable tbody')
-        .insertAdjacentHTML('beforeend', html);
+    .insertAdjacentHTML('beforeend', html); 
 
+    const lastRow = document.querySelector('#itemTable tbody tr:last-child');
+
+    lastRow.querySelector('.qty').addEventListener('input', function () {
+        this.value = formatNumber(this.value);
+        calculateRow(lastRow);
+    });
+
+    lastRow.querySelector('.price').addEventListener('input', function () {
+        this.value = formatNumber(this.value);
+        calculateRow(lastRow);
+    });
+    
     rowIndex++;
 }
+
 
 function removeRow(btn)
 {
@@ -406,21 +422,19 @@ function removeRow(btn)
 
 document.addEventListener('input', function(e){
 
-    if(
+    if (
         e.target.classList.contains('qty') ||
         e.target.classList.contains('price')
     ){
 
         let row = e.target.closest('tr');
 
-        let qty =
-            parseFloat(row.querySelector('.qty').value) || 0;
+        let qty = unformatNumber(row.querySelector('.qty').value);
+        let price = unformatNumber(row.querySelector('.price').value);
 
-        let price =
-            parseFloat(row.querySelector('.price').value) || 0;
+        let total = qty * price;
 
-        row.querySelector('.line-total').value =
-            qty * price;
+        row.querySelector('.line-total').value = formatNumber(total);
 
         calculateTotal();
     }
@@ -430,27 +444,76 @@ function calculateTotal()
 {
     let subtotal = 0;
 
-    document.querySelectorAll('.line-total')
-        .forEach(function(el){
+    document.querySelectorAll('.line-total').forEach(function(el){
 
-            subtotal += parseFloat(el.value) || 0;
-        });
+        subtotal += unformatNumber(el.value);
+        
+    });
+
+    let ppn = document.getElementById('ppn').value;
+    
+    let tax = ppn == 'Ya'
+    ? subtotal * 0.11
+    : 0;
+    
+    let grandTotal = subtotal + tax;
+    
+    document.getElementById('subtotal').value =
+    formatNumber(subtotal);
+    
+    document.getElementById('tax').value =
+    formatNumber(Math.round(tax));
+    
+    document.getElementById('grand_total').value =
+    formatNumber(Math.round(grandTotal));
+}
+
+function formatNumber(value) {
+    value = value.toString().replace(/\D/g, '');
+    
+    if (value === '') return '';
+    
+    return new Intl.NumberFormat('id-ID').format(value);
+}
+
+function unformatNumber(value) {
+    return parseFloat(value.toString().replace(/\./g, '')) || 0;
+}
+
+function calculateRow(row)
+{
+    const qty = unformatNumber(row.querySelector('.qty').value);
+    const price = unformatNumber(row.querySelector('.price').value);
+    
+    const total = qty * price;
+    
+    row.querySelector('.line-total').value = formatNumber(total);
+    
+    calculateTotal();
+}
+
+document.querySelector('form').addEventListener('submit', function () {
+
+    document.querySelectorAll('.qty').forEach(input => {
+        input.value = unformatNumber(input.value);
+    });
+
+    document.querySelectorAll('.price').forEach(input => {
+        input.value = unformatNumber(input.value);
+    });
+
+    document.querySelectorAll('.line-total').forEach(input => {
+        input.value = unformatNumber(input.value);
+    });
 
     document.getElementById('subtotal').value =
-        subtotal.toFixed(2);
-
-    let ppn =
-        document.getElementById('ppn').value;
-
-    let tax =
-        ppn == 'Ya'
-        ? subtotal * 0.11
-        : 0;
+        unformatNumber(document.getElementById('subtotal').value);
 
     document.getElementById('tax').value =
-        tax.toFixed(2);
+        unformatNumber(document.getElementById('tax').value);
 
     document.getElementById('grand_total').value =
-        (subtotal + tax).toFixed(2);
-}
+        unformatNumber(document.getElementById('grand_total').value);
+
+});
 </script>

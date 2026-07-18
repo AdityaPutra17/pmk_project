@@ -86,25 +86,34 @@ class ItemPOController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ItemPO $itemPO)
+    public function update(Request $request, $id)
     {
+        $itemPO = ItemPO::findOrFail($id);
+        // 1. Validasi request input
         $validated = $request->validate([
             'id_jenis_item_po' => 'required|exists:jenis__item__p_o_s,id',
             'description' => 'required|string|max:65535',
         ]);
 
+        // 2. Lakukan update data pada database
         $itemPO->update($validated);
 
+        // 3. Kembalikan ke halaman index dengan notifikasi
         return redirect()->route('item-po.index')->with('success', 'Item PO berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ItemPO $itemPO)
+    public function destroy($id)
     {
-        $itemPO->delete();
+        $itemPO = ItemPO::findOrFail($id);
+        try{
+            $itemPO->delete();
+            return redirect()->route('item-po.index')->with('success', 'Item Deleted Successfully');
+        } catch (\Exception $e){
+                return redirect()->route('item-po.index')->with('error', 'Failed to delete Item: ' .$e->getMessage());
+        }
 
-        return redirect()->route('item-po.index')->with('success', 'Item PO berhasil dihapus.');
     }
 }
